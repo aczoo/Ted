@@ -23,16 +23,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     public static final String TAG = "LoginActivity";
     public EditText etUsername, etPassword;
     public Button btnLogin;
     public CheckBox checkBox;
-    public TextView tvSignUp;
+    public TextView tvSignUp, tvError;
     @Override
     public void onStart() {
         super.onStart();
@@ -66,11 +70,12 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                Log.d(TAG, "Clicked Sign Up");
                 Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(i);
-                finish();
             }
         });
+        tvError = findViewById(R.id.tvErrorMessage);
     }
     public void clicked(View view) {
         Log.i(TAG, "Clicked login");
@@ -86,8 +91,8 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            String errorCode = ((FirebaseAuthException)task.getException()).getErrorCode();
+                            showError(errorCode);
                             updateUI(null);
                         }
                     }
@@ -99,6 +104,23 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(i);
             finish();
         }
+    }
+    protected void showError(String errorCode){
+        Dictionary em = new Hashtable();
+        em.put("ERROR_INVALID_CUSTOM_TOKEN", "The custom token format is incorrect. Please check the documentation.");
+        em.put("ERROR_CUSTOM_TOKEN_MISMATCH","The custom token corresponds to a different audience.");
+        em.put("ERROR_INVALID_CREDENTIAL","The supplied auth credential is malformed or has expired.");
+        em.put("ERROR_INVALID_EMAIL", "The email address is badly formatted.");
+        em.put("ERROR_WRONG_PASSWORD", "The password is invalid.");
+        em.put("ERROR_USER_MISMATCH","The supplied credentials do not correspond to the previously signed in user." );
+        em.put("ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL","An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.");
+        em.put("ERROR_EMAIL_ALREADY_IN_USE","The email address is already in use by another account.");
+        em.put("ERROR_USER_DISABLED","The user account has been disabled by an administrator." );
+        em.put("ERROR_USER_NOT_FOUND", "There is no user record corresponding to this identifier. The user may have been deleted.");
+        em.put("ERROR_WEAK_PASSWORD","The given password is invalid. It must 6 characters at least.");
+        String ec = (String) em.get(errorCode);
+        if (ec!=null)
+            tvError.setText(ec);
     }
 
 }

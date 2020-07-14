@@ -67,4 +67,9 @@
         android:textAllCaps="false"
         android:textColor="@color/blue" />
 
+    <TextView
+        android:id="@+id/tvErrorMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
