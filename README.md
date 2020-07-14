@@ -12,10 +12,6 @@ https://hackmd.io/@zxzMJn9cTR2JoeKMnPiT_Q/SkJXzaj0I
          * Supreme Court Decisions: https://www.freedomforuminstitute.org/first-amendment-center/supreme-court-cases/
          * Court Case API: https://case.law/api/
          * Legal Data API: https://unicourt.com/features/legal-data-api
-    * Data Privacy 
-         * Data Privacy Compliance API from Wolfram Language: https://www.programmableweb.com/api/data-privacy-compliance
-    * Since most of the readily available information is simply factual, how will I add the conversational aspect?
-        * Coggle? Is that too direct? Depends on the scope of the project?
 * Main components of the project
     * Facebook Authentication
     *  Dialogflow integration for NLP
