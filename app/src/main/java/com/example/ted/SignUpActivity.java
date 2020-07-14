@@ -26,6 +26,8 @@ public class SignUpActivity extends LoginActivity {
     @Override
     public void clicked(View view) {
         Log.i(TAG, "Clicked sign up");
+        tvSignUp.setOnClickListener(null);
+        tvSignUp.setVisibility(View.GONE);
 
         mAuth.createUserWithEmailAndPassword(etUsername.getText().toString(),etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

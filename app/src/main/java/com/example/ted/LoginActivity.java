@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ted.MainActivity;
@@ -31,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     public EditText etUsername, etPassword;
     public Button btnLogin;
     public CheckBox checkBox;
+    public TextView tvSignUp;
     @Override
     public void onStart() {
         super.onStart();
@@ -58,6 +60,15 @@ public class LoginActivity extends AppCompatActivity {
                     etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
 
                 }
+            }
+        });
+        tvSignUp = findViewById(R.id.tvSignUp);
+        tvSignUp.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }
