@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="Username"
+        android:hint="frank@gmail.com"
         android:inputType="textPersonName"
         android:textSize="24sp" />
 
