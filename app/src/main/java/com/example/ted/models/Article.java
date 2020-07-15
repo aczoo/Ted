@@ -6,10 +6,11 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Parcel
 public class Article {
     private final String TAG = "Article";
     String author, title, body, publishedAt, articleUrl, imageUrl;
@@ -19,7 +20,8 @@ public class Article {
     public Article(JSONObject jsonObject) throws JSONException {
         author =jsonObject.getJSONArray("tags").getJSONObject(0).getString("webTitle");
         title = jsonObject.getString("webTitle");
-        body = jsonObject.getJSONObject("fields").getString("body");
+        body =jsonObject.getJSONObject("fields").getString("body");
+        clean();
         publishedAt = jsonObject.getString("webPublicationDate");
         articleUrl = jsonObject.getString("webUrl");
         imageUrl = jsonObject.getJSONObject("fields").getString("thumbnail");
@@ -42,5 +44,15 @@ public class Article {
     }
     public String getImageUrl(){
         return imageUrl;
+    }
+    public String getBody(){ return body;}
+    private void clean(){
+        Log.d(TAG, "clean: "+ title);
+        body=body.replaceAll("</p><p>","\n");
+        body=body.replaceAll("<p></p>","\n");
+        body=body.replaceAll("<p>","");
+        body=body.replaceAll("</p>","");
+
+
     }
 }

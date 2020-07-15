@@ -14,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.ted.ArticleDetails;
 import com.example.ted.R;
 import com.example.ted.models.Article;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -74,9 +77,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Article article = articles.get(position);
-                //Intent intent = new Intent(context, details.class);
-                //intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(Article));
-                //context.startActivity(intent);
+                Intent intent = new Intent(context, ArticleDetails.class);
+                intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(article));
+                context.startActivity(intent);
             }
         }
     }
