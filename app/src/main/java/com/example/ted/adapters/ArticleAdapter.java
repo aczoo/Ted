@@ -52,21 +52,22 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView tvTitle, tvAuthor;
+        TextView tvTitle, tvAuthor, tvDate;
         ImageView ivThumbnail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
+            tvDate = itemView.findViewById(R.id.tvDate);
             ivThumbnail = itemView.findViewById(R.id.ivPicture);
             itemView.setOnClickListener(this);
-
         }
 
         public void bind(Article article) {
             tvTitle.setText(article.getTitle());
             tvAuthor.setText(article.getAuthor());
+            tvDate.setText(article.getTimeAgo());
             String url = article.getImageUrl();
             Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15)).placeholder(R.drawable.no_result).into(ivThumbnail);
 

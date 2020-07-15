@@ -30,7 +30,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ArticleDetails extends AppCompatActivity {
     Article article;
-    TextView tvTitle, tvAuthor, tvBody;
+    TextView tvTitle, tvAuthor, tvBody, tvDate;
     ImageView ivThumbnail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +40,19 @@ public class ArticleDetails extends AppCompatActivity {
         tvTitle = findViewById(R.id.tvTitle);
         tvAuthor = findViewById(R.id.tvAuthor);
         tvBody =findViewById(R.id.tvBody);
+        tvDate= findViewById(R.id.tvDate);
         ivThumbnail = findViewById(R.id.ivPicture);
 
         article = Parcels.unwrap(getIntent().getParcelableExtra(Article.class.getSimpleName()));
         tvTitle.setText(article.getTitle());
         tvAuthor.setText(article.getAuthor());
-        fillLinks();
+        fillBody();
+        tvDate.setText(article.getTime());
         String url = article.getImageUrl();
         Glide.with(ArticleDetails.this).load(url).transform(new RoundedCornersTransformation(15, 15)).placeholder(R.drawable.no_result).into(ivThumbnail);
 
     }
-    public void fillLinks(){
+    public void fillBody(){
         SpannableString ss = new SpannableString(article.getBody());
        List<ClickableSpan> cs= new ArrayList<>();
         final List<String> links= article.getLinks();
