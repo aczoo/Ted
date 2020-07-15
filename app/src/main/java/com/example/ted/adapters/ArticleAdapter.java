@@ -3,6 +3,7 @@ package com.example.ted.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ted.R;
 import com.example.ted.models.Article;
 
 import java.util.List;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder>{
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
     Context context;
     List<Article> articles;
+
     public ArticleAdapter(Context context, List<Article> articles) {
         this.context = context;
         this.articles = articles;
@@ -43,29 +48,27 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return articles.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView tvTitle, tvAuthor;
+        ImageView ivThumbnail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
+            tvAuthor = itemView.findViewById(R.id.tvAuthor);
+            ivThumbnail = itemView.findViewById(R.id.ivPicture);
             itemView.setOnClickListener(this);
 
         }
 
         public void bind(Article article) {
-            /*mvTitle.setText(Article.getTitle());
-            mvOver.setText(Article.getDescription());
-            String url;
-            if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                url = Article.getBdPath();
-                Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15)).placeholder(R.drawable.flicks_backdrop_placeholder).into(mvPoster);
-
-            } else {
-                url = Article.getPosterPath();
-                Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15)).placeholder(R.drawable.flicks_Article_placeholder).into(mvPoster);
-            }*/
+            tvTitle.setText(article.getTitle());
+            tvAuthor.setText(article.getAuthor());
+            String url = article.getImageUrl();
+            Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15)).placeholder(R.drawable.no_result).into(ivThumbnail);
 
         }
+
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
