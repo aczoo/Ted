@@ -1,8 +1,11 @@
 package com.example.ted;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.adapters.ArticleAdapter;
+import com.example.ted.adapters.ChatActivity;
 import com.example.ted.models.Article;
 
 import org.json.JSONArray;
@@ -27,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String base_url = "https://content.guardianapis.com/search?q=";
     private static final String API_KEY = "9dc64de8-158b-4a95-8b5d-c0f520e2abd0";
-
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         rvArticles.setAdapter(aa);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
         AsyncHttpClient client = new AsyncHttpClient();
+        Log.d(TAG, "Guardian url: "+ getURL(base_url));
         client.get(getURL(base_url), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         //add query parameters to the base url
         Uri.Builder uriBuilder = baseUri.buildUpon();
         uriBuilder.appendQueryParameter("section", "law");
+        uriBuilder.appendQueryParameter("page-size", "20");
         uriBuilder.appendQueryParameter("order-by", "newest");
         uriBuilder.appendQueryParameter("use-date", "published");
         uriBuilder.appendQueryParameter("show-tags", "contributor,publication");
@@ -73,5 +82,8 @@ public class MainActivity extends AppCompatActivity {
         uriBuilder.appendQueryParameter("api-key", API_KEY);
         return uriBuilder.toString().replace("&=", "");
     }
-
+    public void goChat(MenuItem menuItem){
+        Intent i = new Intent(this, ChatActivity.class);
+        startActivity(i);
+    }
 }

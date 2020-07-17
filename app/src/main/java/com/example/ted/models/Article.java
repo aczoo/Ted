@@ -30,7 +30,7 @@ import java.util.TimeZone;
 
 @Parcel
 public class Article {
-    private final String TAG = "Article";
+    private static final String TAG = "Article";
     String author, title, body, publishedAt, articleUrl, imageUrl, shortPublishedAt;
     List<int[]> index;
     List<String> links;
@@ -40,7 +40,8 @@ public class Article {
     }
 
     public Article(JSONObject jsonObject) throws JSONException {
-        author = jsonObject.getJSONArray("tags").getJSONObject(0).getString("webTitle");
+        if (jsonObject.getJSONArray("tags").length()!=0)
+            author = jsonObject.getJSONArray("tags").getJSONObject(0).getString("webTitle");
         title = jsonObject.getString("webTitle");
         body = jsonObject.getJSONObject("fields").getString("body");
         getRelativeTimeAgo(jsonObject.getString("webPublicationDate"));
@@ -56,6 +57,7 @@ public class Article {
     public static List<Article> fromJsonArray(JSONArray articleJson) throws JSONException {
         List<Article> l = new ArrayList<>();
         for (int i = 0; i < articleJson.length(); i++) {
+            Log.d(TAG ,"fromJsonArray: "+articleJson.getJSONObject(i).toString());
             l.add(new Article(articleJson.getJSONObject(i)));
         }
         return l;
