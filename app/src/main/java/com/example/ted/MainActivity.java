@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.adapters.ArticleAdapter;
-import com.example.ted.adapters.ChatActivity;
 import com.example.ted.models.Article;
 
 import org.json.JSONArray;
