@@ -52,11 +52,11 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.cloud:google-cloud-dialogflow:2.1.0'
-    implementation 'io.grpc:grpc-okhttp:1.15.1'
+    implementation 'com.google.cloud:google-cloud-dialogflow:0.120.2'
+    implementation 'io.grpc:grpc-okhttp:1.27.2'
+    implementation 'io.grpc:grpc-core:1.27.2'
     implementation 'ai.api:sdk:2.0.7@aar'
     implementation 'ai.api:libai:1.6.12'
-    implementation 'com.google.cloud:google-cloud-dialogflow:0.67.0-alpha'
 
 
 

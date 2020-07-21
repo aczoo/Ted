@@ -1,7 +1,9 @@
-package com.example.ted;
+package com.example.ted.clients;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+
+import com.example.ted.ChatActivity;
 
 import ai.api.AIServiceContext;
 import ai.api.AIServiceException;
@@ -9,13 +11,13 @@ import ai.api.android.AIDataService;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
-public class ChatClient  extends AsyncTask<AIRequest, Void, AIResponse> {
+public class ChatClientV1  extends AsyncTask<AIRequest, Void, AIResponse> {
 
     Activity activity;
     private AIDataService aiDataService;
     private AIServiceContext customAIServiceContext;
 
-    public ChatClient(Activity activity, AIDataService aiDataService, AIServiceContext customAIServiceContext){
+    public ChatClientV1(Activity activity, AIDataService aiDataService, AIServiceContext customAIServiceContext){
         this.activity = activity;
         this.aiDataService = aiDataService;
         this.customAIServiceContext = customAIServiceContext;
@@ -34,6 +36,6 @@ public class ChatClient  extends AsyncTask<AIRequest, Void, AIResponse> {
 
     @Override
     protected void onPostExecute(AIResponse aiResponse) {
-        ((ChatActivity)activity).callback(aiResponse);
+        //((ChatActivity)activity).callback(aiResponse);
     }
 }
