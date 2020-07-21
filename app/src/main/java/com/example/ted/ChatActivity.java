@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ai.api.AIServiceException;
 import ai.api.android.AIDataService;
 import ai.api.AIServiceContext;
 import ai.api.AIServiceContextBuilder;
@@ -84,7 +85,6 @@ public class ChatActivity extends AppCompatActivity {
                 return false;
             }
         });
-
 
         final AIConfiguration config = new AIConfiguration("AIzaSyAK8h56gc1CvpvfgEaaRC5tr6YnPyU6UJg",
                 AIConfiguration.SupportedLanguages.English,
