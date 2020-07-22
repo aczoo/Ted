@@ -24,6 +24,7 @@ public class SignUpActivity extends LoginActivity {
         btnLogin.setText("Sign Up");
         tvSignUp.setOnClickListener(null);
         tvSignUp.setVisibility(View.GONE);
+        btnFacebook.setVisibility(View.GONE);
     }
 
     @Override
