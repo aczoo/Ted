@@ -1,6 +1,10 @@
 package com.example.ted;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
         articles = new ArrayList<>();
         RecyclerView rvArticles = findViewById(R.id.rvArticles);
         final ArticleAdapter aa = new ArticleAdapter(this, articles);
@@ -85,4 +91,14 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, ChatActivity.class);
         startActivity(i);
     }
+    public void goProfile(MenuItem menuItem){
+        Intent i = new Intent(this, ProfileActivity.class);
+        startActivity(i);
+    }
+    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
 }
