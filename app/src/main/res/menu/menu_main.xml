@@ -3,12 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/icon_chat"
-        android:icon="@android:drawable/stat_notify_chat"
-        android:onClick="goChat"
-        android:title="Chat"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/icon_profile"
         android:icon="@drawable/com_facebook_profile_picture_blank_portrait"
         android:onClick="goProfile"

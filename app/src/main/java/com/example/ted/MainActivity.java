@@ -1,5 +1,6 @@
 package com.example.ted;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,10 +9,13 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewAnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +31,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.adapters.ArticleAdapter;
+import com.example.ted.clients.ChatClient;
 import com.example.ted.models.Article;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateMenu, new IntentFilter("newpfp"));
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
         articles = new ArrayList<>();
         RecyclerView rvArticles = findViewById(R.id.rvArticles);
@@ -91,6 +99,27 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onFailure");
             }
         });
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, ChatActivity.class);
+                startActivity(i);
+            }
+        });
+        rvArticles.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hide();
+            }
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    fab.show();
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     public String getURL(String base) {
@@ -106,10 +135,6 @@ public class MainActivity extends AppCompatActivity {
         uriBuilder.appendQueryParameter("api-key", API_KEY);
         return uriBuilder.toString().replace("&=", "");
     }
-    public void goChat(MenuItem menuItem){
-        Intent i = new Intent(this, ChatActivity.class);
-        startActivity(i);
-    }
     public void goProfile(MenuItem menuItem){
         Intent i = new Intent(this, ProfileActivity.class);
         startActivity(i);
@@ -118,6 +143,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             finish();
+        }
+    };
+    public BroadcastReceiver updateMenu = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            invalidateOptionsMenu();
         }
     };
 }
