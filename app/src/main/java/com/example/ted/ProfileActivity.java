@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tvName);
 
         customProfile(250);
-        tvName.setText(user.getDisplayName());
+        tvName.setText("Hello "+user.getDisplayName());
 
     }
     public void logout(View view){
