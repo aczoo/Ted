@@ -76,7 +76,6 @@ public class ChatActivity extends AppCompatActivity {
         chatLayout = findViewById(R.id.parentChat);
         if (savedInstanceState == null) {
             chatLayout.setVisibility(View.INVISIBLE);
-
             ViewTreeObserver viewTreeObserver = chatLayout.getViewTreeObserver();
             if (viewTreeObserver.isAlive()) {
                 viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

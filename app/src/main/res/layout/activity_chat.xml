@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentChat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id = "@+id/parentChat">
+    android:background="#FFFFFF">
 
 
     <RelativeLayout
@@ -11,12 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
         android:gravity="bottom"
-        android:paddingBottom="9dp"
-        android:paddingEnd="8dp"
         android:paddingStart="8dp"
-        android:paddingTop="8dp">
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="9dp">
 
         <ImageView
             android:id="@+id/sendBtn"
@@ -32,10 +32,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/sendBtn"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:imeOptions="actionSend"
             android:inputType="text"
             android:paddingTop="4dp"
             android:shadowColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorAccent"
             android:textSize="18sp" />
 
     </RelativeLayout>

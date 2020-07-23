@@ -16,7 +16,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ProfileActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ChatActivity" />
+        <activity android:name=".ChatActivity"
+            android:theme="@style/AppTheme.Transparent"/>
         <activity android:name=".ArticleDetails" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
