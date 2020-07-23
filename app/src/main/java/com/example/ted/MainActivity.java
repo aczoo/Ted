@@ -5,21 +5,31 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.adapters.ArticleAdapter;
 import com.example.ted.models.Article;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +41,22 @@ import java.util.List;
 import okhttp3.Headers;
 
 public class MainActivity extends AppCompatActivity {
-    List<Article> articles;
+    private List<Article> articles;
     private static final String TAG = "MainActivity";
     private static final String base_url = "https://content.guardianapis.com/search?q=";
     private static final String API_KEY = "9dc64de8-158b-4a95-8b5d-c0f520e2abd0";
+    private FirebaseUser user;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        final MenuItem profile = menu.findItem(R.id.icon_profile);
+        Glide.with(this).asBitmap().load(user.getPhotoUrl()).circleCrop().into(new SimpleTarget<Bitmap>(100,100) {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                profile.setIcon(new BitmapDrawable(getResources(),resource));
+            }
+        });
         return true;
     }
     @Override

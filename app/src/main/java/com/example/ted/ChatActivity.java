@@ -1,7 +1,12 @@
 package com.example.ted;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,7 +41,6 @@ import ai.api.model.AIResponse;
 import java.io.InputStream;
 import java.util.UUID;
 
-
 // removed implements AIListener
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -58,6 +62,8 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+
         /*int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             Log.i(TAG, "Permission to record denied");
@@ -71,7 +77,7 @@ public class ChatActivity extends AppCompatActivity {
         aiRequest = new AIRequest();
         aiService = AIService.getService(this, config);
         aiService.setListener(this);*/
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
         final ScrollView svChat = findViewById(R.id.chatScrollView);
         svChat.post(new Runnable() {
             @Override
@@ -108,10 +114,16 @@ public class ChatActivity extends AppCompatActivity {
         });
         startChat();
     }
+    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
 
     private void startChat() {
         try {
-            InputStream stream = getResources().openRawResource(getResources().getIdentifier("clientkey", "raw", getPackageName()));
+            InputStream stream = getResources().openRawResource(getResources().getIdentifier("client_secrets", "raw", getPackageName()));
             GoogleCredentials credentials = GoogleCredentials.fromStream(stream);
             String projectId = ((ServiceAccountCredentials) credentials).getProjectId();
 
@@ -184,11 +196,8 @@ public class ChatActivity extends AppCompatActivity {
         return (FrameLayout) inflater.inflate(R.layout.item_bot_message, null);
     }
 
-
-
-     /*
-
-         public void callbackV1(AIResponse aiResponse) {
+    /*
+    public void callbackV1(AIResponse aiResponse) {
         if (aiResponse != null) {
             // process aiResponse here
             String botReply = aiResponse.getResult().getFulfillment().getSpeech();

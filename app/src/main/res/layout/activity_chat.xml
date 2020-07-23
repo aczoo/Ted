@@ -34,6 +34,7 @@
             android:imeOptions="actionSend"
             android:inputType="text"
             android:paddingTop="4dp"
+            android:shadowColor="@color/colorPrimaryDark"
             android:textSize="18sp" />
 
     </RelativeLayout>

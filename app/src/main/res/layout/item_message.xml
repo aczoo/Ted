@@ -21,16 +21,18 @@
             android:id="@+id/chatMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:padding="12dp"
+            android:layout_marginTop="2dp"
+            android:paddingStart="10dp"
+            android:paddingTop="2.5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="2.5dp"
             android:text="abcdefgh"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_height="wrap_content">
 
         </FrameLayout>
 
