@@ -1,26 +1,38 @@
 package com.example.ted;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.Manifest;
+import android.animation.Animator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ted.clients.ChatClient;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -35,6 +47,7 @@ import ai.api.android.AIDataService;
 import ai.api.AIServiceContext;
 import ai.api.AIServiceContextBuilder;
 import ai.api.android.AIConfiguration;
+import ai.api.android.AIService;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
@@ -49,34 +62,37 @@ public class ChatActivity extends AppCompatActivity {
     private final int audioRequest = 2222;
     private String uuid = UUID.randomUUID().toString();
 
-    /* private AIDataService aiDataService;
-     private AIServiceContext customAIServiceContext;
-     private AIRequest aiRequest;*/
     private SessionsClient sessionsClient;
     private SessionName session;
     private LinearLayout llChat;
     private EditText etQuery;
-
+    private View chatLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.do_not_move, R.anim.do_not_move);
         setContentView(R.layout.activity_chat);
+        chatLayout = findViewById(R.id.parentChat);
+        if (savedInstanceState == null) {
+            chatLayout.setVisibility(View.INVISIBLE);
 
-
-        /*int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "Permission to record denied");
-            makeRequest();
+            ViewTreeObserver viewTreeObserver = chatLayout.getViewTreeObserver();
+            if (viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        circularRevealActivity();
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                            chatLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        } else {
+                            chatLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    }
+                });
+            }
         }
-        final AIConfiguration config = new AIConfiguration("AIzaSyAK8h56gc1CvpvfgEaaRC5tr6YnPyU6UJg",
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-        aiDataService = new AIDataService(this, config);
-        customAIServiceContext = AIServiceContextBuilder.buildFromSessionId(uuid);
-        aiRequest = new AIRequest();
-        aiService = AIService.getService(this, config);
-        aiService.setListener(this);*/
+
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
         final ScrollView svChat = findViewById(R.id.chatScrollView);
         svChat.post(new Runnable() {
@@ -114,12 +130,17 @@ public class ChatActivity extends AppCompatActivity {
         });
         startChat();
     }
-    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finish();
-        }
-    };
+
+    private void circularRevealActivity() {
+        int cx = chatLayout.getRight();
+        int cy = chatLayout.getBottom();
+        float finalRadius = Math.max(chatLayout.getWidth(), chatLayout.getHeight());
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(chatLayout, cx, cy, 0, finalRadius);
+        circularReveal.setDuration(1000);
+        chatLayout.setVisibility(View.VISIBLE);
+        circularReveal.start();
+    }
+
 
     private void startChat() {
         try {
@@ -195,8 +216,34 @@ public class ChatActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(ChatActivity.this);
         return (FrameLayout) inflater.inflate(R.layout.item_bot_message, null);
     }
+    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
 
     /*
+
+    public void onCreateAudio(){
+        private AIDataService aiDataService;
+        private AIServiceContext customAIServiceContext;
+        private AIRequest aiRequest;
+        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission to record denied");
+                makeRequest();
+            }
+        final AIConfiguration config = new AIConfiguration("AIzaSyAK8h56gc1CvpvfgEaaRC5tr6YnPyU6UJg",
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+        aiDataService = new AIDataService(this, config);
+        customAIServiceContext = AIServiceContextBuilder.buildFromSessionId(uuid);
+        aiRequest = new AIRequest();
+        aiService = AIService.getService(this, config);
+        aiService.setListener(this);
+        }
+
     public void callbackV1(AIResponse aiResponse) {
         if (aiResponse != null) {
             // process aiResponse here
