@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser user;
     private RecyclerView rvArticles;
     private ShimmerFrameLayout shimmerFrameLayout;
+    private FloatingActionButton fab;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onFailure");
             }
         });
-        final FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

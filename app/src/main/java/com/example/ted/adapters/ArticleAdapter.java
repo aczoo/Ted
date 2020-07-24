@@ -1,5 +1,6 @@
 package com.example.ted.adapters;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.ted.ArticleDetails;
 import com.example.ted.R;
@@ -53,8 +55,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle, tvAuthor, tvDate;
-
         ImageView ivThumbnail;
+        LottieAnimationView heart, heartbreak;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,12 +64,69 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
             tvDate = itemView.findViewById(R.id.tvDate);
             ivThumbnail = itemView.findViewById(R.id.ivPicture);
+            heart = itemView.findViewById(R.id.heart);
+            heartbreak = itemView.findViewById(R.id.heartbreak);
+            heart.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    heart.setVisibility(View.GONE);
+                    heart.setProgress(0);
+                    heartbreak.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
+            heartbreak.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    heartbreak.setVisibility(View.GONE);
+                    heartbreak.setProgress(0);
+                    heart.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            heart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    heart.playAnimation();
+                }
+            });
+            heartbreak.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    heartbreak.playAnimation();
+                }
+            });
             itemView.setOnClickListener(this);
         }
 
         public void bind(Article article) {
             tvTitle.setText(article.getTitle());
-            if (article.getAuthor()==null){
+            if (article.getAuthor() == null) {
                 View bar = itemView.findViewById(R.id.vBar);
                 bar.setVisibility(View.GONE);
             }

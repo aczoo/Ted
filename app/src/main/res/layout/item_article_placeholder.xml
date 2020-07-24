@@ -35,7 +35,7 @@
 
             <View
                 android:id="@+id/vBar"
-                android:layout_width="5dp"
+                android:layout_width="2dp"
                 android:layout_height="13dp"
                 android:layout_below="@id/vTitle"
                 android:layout_marginStart="5dp"
