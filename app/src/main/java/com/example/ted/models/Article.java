@@ -46,7 +46,9 @@ public class Article {
         body = jsonObject.getJSONObject("fields").getString("body");
         getRelativeTimeAgo(jsonObject.getString("webPublicationDate"));
         articleUrl = jsonObject.getString("webUrl");
-        imageUrl = jsonObject.getJSONObject("fields").getString("thumbnail");
+        if (jsonObject.getJSONObject("fields").has("thumbnail")){
+            imageUrl = jsonObject.getJSONObject("fields").getString("thumbnail");
+        }
         index = new ArrayList<>();
         links = new ArrayList<>();
         clean();

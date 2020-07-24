@@ -53,6 +53,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle, tvAuthor, tvDate;
+
         ImageView ivThumbnail;
 
         public ViewHolder(@NonNull View itemView) {
@@ -66,6 +67,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         public void bind(Article article) {
             tvTitle.setText(article.getTitle());
+            if (article.getAuthor()==null){
+                View bar = itemView.findViewById(R.id.vBar);
+                bar.setVisibility(View.GONE);
+            }
             tvAuthor.setText(article.getAuthor());
             tvDate.setText(article.getTimeAgo());
             String url = article.getImageUrl();

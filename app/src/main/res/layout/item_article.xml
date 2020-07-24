@@ -20,14 +20,17 @@
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="229dp"
-            android:layout_height="38dp"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="21dp"
             android:layout_marginEnd="20dp"
             android:layout_toEndOf="@+id/ivPicture"
-            android:text="Title" />
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Title"
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/ivPicture"
@@ -67,6 +70,19 @@
             android:layout_toEndOf="@id/tvAuthor"
             android:background="@color/colorAccent" />
 
+        <ImageView
+            android:id="@+id/ivClock"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@id/vBar"
+            android:alpha=".75"
+            app:srcCompat="@drawable/clock" />
+
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
@@ -81,18 +97,15 @@
             android:text="Date"
             android:textSize="12sp" />
 
-        <ImageView
-            android:id="@+id/ivClock"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/heart"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_below="@id/tvTitle"
-            android:layout_alignParentBottom="false"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="0dp"
-            android:layout_toEndOf="@id/vBar"
-            android:alpha=".75"
-            app:srcCompat="@drawable/clock" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            app:lottie_rawRes="@raw/heart" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
