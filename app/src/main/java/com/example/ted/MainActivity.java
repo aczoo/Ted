@@ -33,6 +33,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.adapters.ArticleAdapter;
 import com.example.ted.clients.ChatClient;
 import com.example.ted.models.Article;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String base_url = "https://content.guardianapis.com/search?q=";
     private static final String API_KEY = "9dc64de8-158b-4a95-8b5d-c0f520e2abd0";
     private FirebaseUser user;
+    private RecyclerView rvArticles;
+    private ShimmerFrameLayout shimmerFrameLayout;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -73,8 +76,9 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(updateMenu, new IntentFilter("newpfp"));
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
+        shimmerFrameLayout= findViewById(R.id.shimmerFrameLayout);
         articles = new ArrayList<>();
-        RecyclerView rvArticles = findViewById(R.id.rvArticles);
+        rvArticles = findViewById(R.id.rvArticles);
         final ArticleAdapter aa = new ArticleAdapter(this, articles);
         rvArticles.setAdapter(aa);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
@@ -92,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -104,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ChatActivity.class);
+                i.putExtra("x", fab.getRight()-fab.getWidth()/2);
+                i.putExtra("y",fab.getBottom()+fab.getHeight()/2);
                 startActivity(i);
             }
         });
@@ -120,6 +128,17 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        shimmerFrameLayout.startShimmerAnimation();
+    }
+
+    @Override
+    protected void onPause() {
+        shimmerFrameLayout.stopShimmerAnimation();
+        super.onPause();
     }
 
     public String getURL(String base) {

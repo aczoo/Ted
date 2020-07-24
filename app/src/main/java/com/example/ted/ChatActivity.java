@@ -67,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayout llChat;
     private EditText etQuery;
     private View chatLayout;
+    private int fabx,faby;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,8 @@ public class ChatActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.do_not_move, R.anim.do_not_move);
         setContentView(R.layout.activity_chat);
         chatLayout = findViewById(R.id.parentChat);
+        fabx=getIntent().getIntExtra("x", chatLayout.getRight());
+        faby=getIntent().getIntExtra("y", chatLayout.getBottom());
         if (savedInstanceState == null) {
             chatLayout.setVisibility(View.INVISIBLE);
             ViewTreeObserver viewTreeObserver = chatLayout.getViewTreeObserver();
@@ -131,13 +134,41 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void circularRevealActivity() {
-        int cx = chatLayout.getRight();
-        int cy = chatLayout.getBottom();
         float finalRadius = Math.max(chatLayout.getWidth(), chatLayout.getHeight());
-        Animator circularReveal = ViewAnimationUtils.createCircularReveal(chatLayout, cx, cy, 0, finalRadius);
-        circularReveal.setDuration(1000);
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(chatLayout, fabx, faby, 0, finalRadius);
+        circularReveal.setDuration(500);
         chatLayout.setVisibility(View.VISIBLE);
         circularReveal.start();
+    }
+    @Override
+    public void onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            float finalRadius = Math.max(chatLayout.getWidth(), chatLayout.getHeight());
+            Animator circularReveal = ViewAnimationUtils.createCircularReveal(chatLayout, fabx, faby, finalRadius, 0);
+            circularReveal.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    chatLayout.setVisibility(View.INVISIBLE);
+                    finish();
+                }
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            circularReveal.setDuration(500);
+            circularReveal.start();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
 

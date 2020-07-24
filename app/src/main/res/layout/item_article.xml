@@ -10,67 +10,89 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/activity_vertical_margin"
-    app:cardElevation="@dimen/activity_vertical_margin">
+    app:cardElevation="@dimen/activity_vertical_margin"
+    app:cardMaxElevation="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/ll"
-            android:layout_width="372dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvTitle"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvAuthor"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="left"
-                android:text="Frank"
-                android:textColorLink="@color/colorAccent"
-                android:textIsSelectable="true"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tvDate"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="Date"
-                android:textSize="12sp" />
-        </LinearLayout>
-
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="372dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            android:layout_width="229dp"
+            android:layout_height="38dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
+            android:layout_toEndOf="@+id/ivPicture"
             android:text="Title" />
 
         <ImageView
             android:id="@+id/ivPicture"
-            android:layout_width="300dp"
-            android:layout_height="150dp"
-            android:layout_below="@id/ll"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
             android:layout_alignParentStart="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="56dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="1dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:elevation="50dp"
             tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/tvAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTitle"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@+id/ivPicture"
+            android:gravity="center"
+            android:text="Dr. Frank"
+            android:textColorLink="@color/colorAccent"
+            android:textIsSelectable="false"
+            android:textSize="12sp" />
+
+        <View
+            android:id="@+id/vBar"
+            android:layout_width="1.5dp"
+            android:layout_height="13dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="18dp"
+            android:layout_toEndOf="@id/tvAuthor"
+            android:background="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTitle"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/ivClock"
+            android:gravity="center"
+            android:text="Date"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/ivClock"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@id/vBar"
+            android:alpha=".75"
+            app:srcCompat="@drawable/clock" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
