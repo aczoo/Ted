@@ -3,6 +3,7 @@ package com.example.ted.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.example.ted.ArticleDetails;
 import com.example.ted.R;
 import com.example.ted.models.Article;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.List;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
+    private String TAG = "ArticleAdapter";
     Context context;
     List<Article> articles;
 
@@ -36,7 +39,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
+            if(viewType ==1)
+                return new welcomeViewHolder(LayoutInflater.from(context).inflate(R.layout.item_welcome, parent, false));
+            else
+                return new articleViewHolder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
 
     }
 
@@ -50,14 +56,33 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public int getItemCount() {
         return articles.size();
     }
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) return 1;
+        else return 2;
+    }
+    public abstract class ViewHolder extends RecyclerView.ViewHolder {
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+        public void bind(Article article) {
+        }
+    }
+    public class welcomeViewHolder extends ViewHolder implements View.OnClickListener{
+        public welcomeViewHolder(View itemView) {
+            super(itemView);
+        }
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "hi");
 
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        }
+    }
+    public class articleViewHolder extends ViewHolder implements View.OnClickListener {
         TextView tvTitle, tvAuthor, tvDate;
         ImageView ivThumbnail;
         LottieAnimationView heart, heartbreak;
-
-        public ViewHolder(@NonNull View itemView) {
+        public articleViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
@@ -122,8 +147,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             });
             itemView.setOnClickListener(this);
         }
-
-        public void bind(Article article) {
+        @Override
+        public void bind(@NotNull Article article) {
             tvTitle.setText(article.getTitle());
             if (article.getAuthor() == null) {
                 View bar = itemView.findViewById(R.id.vBar);
