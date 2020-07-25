@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 ./app/res/raw
+client_secrets.json
