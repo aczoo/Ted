@@ -30,6 +30,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:text="Title"
+            android:textColor="#3E5560"
             android:textSize="13sp" />
 
         <ImageView

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.ted.ArticleDetails;
+import com.example.ted.ChatActivity;
 import com.example.ted.R;
 import com.example.ted.models.Article;
 
@@ -71,11 +72,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public class welcomeViewHolder extends ViewHolder implements View.OnClickListener{
         public welcomeViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
         }
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "hi");
-
+            Intent i = new Intent(context, ChatActivity.class);
+            i.putExtra("x", 948);
+            i.putExtra("y",1830);
+            context.startActivity(i);
         }
     }
     public class articleViewHolder extends ViewHolder implements View.OnClickListener {
