@@ -20,6 +20,7 @@ import android.view.ViewAnimationUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvArticles;
     private ShimmerFrameLayout shimmerFrameLayout;
     private FloatingActionButton fab;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -77,9 +79,12 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(updateMenu, new IntentFilter("newpfp"));
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
-        shimmerFrameLayout= findViewById(R.id.shimmerFrameLayout);
-        articles = new ArrayList<>();
+
         rvArticles = findViewById(R.id.rvArticles);
+        fab = findViewById(R.id.fab);
+        shimmerFrameLayout= findViewById(R.id.shimmerFrameLayout);
+
+        articles = new ArrayList<>();
         final ArticleAdapter aa = new ArticleAdapter(this, articles);
         rvArticles.setAdapter(aa);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -106,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onFailure");
             }
         });
-        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -3,8 +3,6 @@ package com.example.ted.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +36,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View articleView = LayoutInflater.from(context).inflate(R.layout.item_article, parent, false);
-        return new ViewHolder(articleView);
+            return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
+
     }
 
     @Override
@@ -52,6 +50,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public int getItemCount() {
         return articles.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle, tvAuthor, tvDate;
@@ -133,7 +132,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             tvAuthor.setText(article.getAuthor());
             tvDate.setText(article.getTimeAgo());
             String url = article.getImageUrl();
-            Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15)).placeholder(R.drawable.no_result).into(ivThumbnail);
+            Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15))
+                    .thumbnail(Glide.with(itemView.getContext()).load(R.drawable.noresponse)).into(ivThumbnail);
 
         }
 
