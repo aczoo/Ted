@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        android:backgroundTint="#BD910A">
+        android:backgroundTint="@color/accent">
 
         <ImageView
             android:id="@+id/ted"
@@ -37,7 +37,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="17dp"
             android:layout_marginBottom="128dp"
-            android:text="What are your right?"
+            android:text="What are your rights?"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold" />
