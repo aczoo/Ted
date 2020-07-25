@@ -3,14 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:clickable="true"
-        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="@dimen/activity_vertical_margin"
         app:cardElevation="@dimen/activity_vertical_margin"

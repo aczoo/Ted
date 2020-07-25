@@ -20,7 +20,6 @@
         android:backgroundTint="@color/accent">
 
         <ImageView
-            android:id="@+id/ted"
             android:layout_width="309dp"
             android:layout_height="179dp"
             android:layout_alignParentStart="true"
@@ -30,26 +29,24 @@
             app:srcCompat="@drawable/lawyer" />
 
         <TextView
-            android:id="@+id/intro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="17dp"
-            android:layout_marginBottom="128dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="135dp"
             android:text="What are your rights?"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/intro2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="42dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="65dp"
             android:text="Ask Ted"
             android:textColor="#FFFFFF"
             android:textSize="50sp"
