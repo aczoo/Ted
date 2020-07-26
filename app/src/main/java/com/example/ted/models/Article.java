@@ -31,7 +31,7 @@ import java.util.TimeZone;
 @Parcel
 public class Article {
     private static final String TAG = "Article";
-    String author, title, body, publishedAt, articleUrl, imageUrl, shortPublishedAt;
+    String id, author, title, body, publishedAt, articleUrl, imageUrl, shortPublishedAt;
     List<int[]> index;
     List<String> links;
     StringBuilder sb;
@@ -40,6 +40,7 @@ public class Article {
     }
 
     public Article(JSONObject jsonObject) throws JSONException {
+        id = jsonObject.getString("id");
         if (jsonObject.getJSONArray("tags").length()!=0)
             author = jsonObject.getJSONArray("tags").getJSONObject(0).getString("webTitle");
         title = jsonObject.getString("webTitle");
@@ -52,8 +53,6 @@ public class Article {
         index = new ArrayList<>();
         links = new ArrayList<>();
         clean();
-
-
     }
 
     public static List<Article> fromJsonArray(JSONArray articleJson) throws JSONException {
