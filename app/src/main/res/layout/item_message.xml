@@ -2,17 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="15dp">
 
     <LinearLayout
         android:id="@+id/userMsgLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/user_chat"
         android:gravity="end|center_vertical"
         android:orientation="vertical">
@@ -21,11 +21,10 @@
             android:id="@+id/chatMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:paddingStart="10dp"
-            android:paddingTop="2.5dp"
+            android:paddingTop="5dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="2.5dp"
+            android:paddingBottom="5dp"
             android:text="abcdefgh"
             android:textColor="@color/colorAccent"
             android:textSize="16sp" />

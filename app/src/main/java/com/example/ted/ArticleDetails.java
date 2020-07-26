@@ -1,6 +1,7 @@
 package com.example.ted;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -49,8 +50,8 @@ public class ArticleDetails extends AppCompatActivity {
         fillBody();
         tvDate.setText(article.getTime());
         String url = article.getImageUrl();
-        Glide.with(ArticleDetails.this).load(url).transform(new RoundedCornersTransformation(15, 15))
-                .thumbnail(Glide.with(ArticleDetails.this).load(R.drawable.noresponse)).into(ivThumbnail);
+        Glide.with(ArticleDetails.this).load(url).thumbnail(Glide.with(ArticleDetails.this).load(R.drawable.noresponse)).into(ivThumbnail);
+
     }
     public void fillBody(){
         SpannableString ss = new SpannableString(article.getBody());

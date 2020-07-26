@@ -18,7 +18,10 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ChatActivity"
             android:theme="@style/AppTheme.Transparent"/>
-        <activity android:name=".ArticleDetails" />
+        <activity android:name=".ArticleDetails"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
