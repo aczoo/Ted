@@ -4,11 +4,15 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +21,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.ted.ArticleDetails;
 import com.example.ted.ChatActivity;
+import com.example.ted.MainActivity;
 import com.example.ted.R;
 import com.example.ted.models.Article;
 
@@ -44,9 +49,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 return new welcomeViewHolder(LayoutInflater.from(context).inflate(R.layout.item_welcome, parent, false));
             else
                 return new articleViewHolder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
-
     }
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Article article = articles.get(position);
@@ -86,7 +89,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         TextView tvTitle, tvAuthor, tvDate;
         ImageView ivThumbnail;
         LottieAnimationView heart, heartbreak;
-        public articleViewHolder(@NonNull View itemView) {
+        public articleViewHolder(@NonNull final View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
@@ -129,9 +132,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
                 @Override
                 public void onAnimationCancel(Animator animator) {
-
                 }
-
                 @Override
                 public void onAnimationRepeat(Animator animator) {
 
@@ -150,6 +151,23 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 }
             });
             itemView.setOnClickListener(this);
+            /*itemView.setOnTouchListener(new OnDoubleTapListener() {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+                   onClick(itemView);
+                   return true;
+                }
+                @Override
+                public boolean onDoubleTap(MotionEvent motionEvent) {
+                    if (heart.getVisibility()==View.GONE){
+                        heartbreak.playAnimation();
+                        return true;
+                    }
+                    heart.playAnimation();
+                    return true;
+                }
+            });*/
+
         }
         @Override
         public void bind(@NotNull Article article) {

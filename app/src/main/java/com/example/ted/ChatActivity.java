@@ -131,6 +131,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         startChat();
+        welcomeMessage();
     }
 
     private void circularRevealActivity() {
@@ -187,7 +188,10 @@ public class ChatActivity extends AppCompatActivity {
         }
 
     }
-
+    private void welcomeMessage(){
+        QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
+        new ChatClient(ChatActivity.this, session, sessionsClient, queryInput).execute();
+    }
     private void sendMessage(View view) {
         String msg = etQuery.getText().toString();
         if (msg.trim().isEmpty()) {
