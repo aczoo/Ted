@@ -38,7 +38,9 @@
         android:background="#FFFFFF"
         app:duration="1000"
         tools:layout_editor_absoluteY="15dp">
-
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,17 +57,8 @@
 
             <include layout="@layout/item_article_placeholder" />
 
-            <include layout="@layout/item_article_placeholder" />
-
-            <include layout="@layout/item_article_placeholder" />
-
-            <include layout="@layout/item_article_placeholder" />
-
-            <include layout="@layout/item_article_placeholder" />
-
-            <include layout="@layout/item_article_placeholder" />
-
         </LinearLayout>
+        </ScrollView>
     </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

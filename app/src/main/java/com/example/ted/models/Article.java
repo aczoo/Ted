@@ -63,7 +63,7 @@ public class Article {
         }
         return l;
     }
-
+    public String getId() { return id; }
     public String getAuthor() {
         return author;
     }

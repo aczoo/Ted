@@ -1,20 +1,21 @@
 package com.example.ted;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SignUpActivity extends LoginActivity {
 
@@ -39,6 +40,10 @@ public class SignUpActivity extends LoginActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("likes","hi");
+                            db.child(user.getUid()).updateChildren(map);
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

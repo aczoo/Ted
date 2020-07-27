@@ -34,7 +34,7 @@
             <View
                 android:id="@+id/vBar"
                 android:layout_width="2dp"
-                android:layout_height="13dp"
+                android:layout_height="12dp"
                 android:layout_below="@id/vTitle"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="15dp"
@@ -55,7 +55,7 @@
             <View
                 android:id="@+id/vAuthor"
                 android:layout_width="50dp"
-                android:layout_height="12dp"
+                android:layout_height="10dp"
                 android:layout_below="@+id/vTitle"
                 android:layout_alignParentBottom="false"
                 android:layout_marginStart="15dp"
@@ -70,7 +70,7 @@
             <View
                 android:id="@+id/vDate"
                 android:layout_width="30dp"
-                android:layout_height="12dp"
+                android:layout_height="10dp"
                 android:layout_below="@+id/vTitle"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentBottom="false"

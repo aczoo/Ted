@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.codepath.asynchttpclient.AsyncHttpClient;
@@ -66,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         user = FirebaseAuth.getInstance().getCurrentUser();
         final MenuItem profile = menu.findItem(R.id.icon_profile);
-        Glide.with(this).asBitmap().load(user.getPhotoUrl()).circleCrop().into(new SimpleTarget<Bitmap>(100,100) {
+        Glide.with(this).asBitmap().load(user.getPhotoUrl()).circleCrop()
+                .thumbnail(Glide.with(this).asBitmap().load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop())
+                .into(new SimpleTarget<Bitmap>(100,100) {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 profile.setIcon(new BitmapDrawable(getResources(),resource));
@@ -81,11 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(updateMenu, new IntentFilter("newpfp"));
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
-
         rvArticles = findViewById(R.id.rvArticles);
         fab = findViewById(R.id.fab);
         shimmerFrameLayout= findViewById(R.id.shimmerFrameLayout);
-
         articles = new ArrayList<>();
         final ArticleAdapter aa = new ArticleAdapter(this, articles);
         rvArticles.setAdapter(aa);
@@ -137,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+
+
+
     }
     @Override
     public void onResume() {

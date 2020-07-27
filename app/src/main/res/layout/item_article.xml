@@ -59,7 +59,7 @@
             android:text="Dr. Frank"
             android:textColorLink="@color/colorAccent"
             android:textIsSelectable="false"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
 
         <View
             android:id="@+id/vBar"
@@ -67,7 +67,7 @@
             android:layout_height="13dp"
             android:layout_below="@id/tvTitle"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/tvAuthor"
             android:background="@color/colorAccent" />
 
@@ -78,7 +78,7 @@
             android:layout_below="@id/tvTitle"
             android:layout_alignParentBottom="false"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="19dp"
+            android:layout_marginTop="17dp"
             android:layout_marginBottom="0dp"
             android:layout_toEndOf="@id/vBar"
             android:alpha=".75"
@@ -96,7 +96,7 @@
             android:layout_toEndOf="@+id/ivClock"
             android:gravity="center"
             android:text="Date"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/heart"

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +33,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
 
@@ -43,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ImageView ivPfp, ivEdit;
     private TextView tvName;
+    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
         ivEdit = findViewById(R.id.ivEdit);
         tvName = findViewById(R.id.tvName);
 
-        Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop().placeholder(R.drawable.blankpfp).into(ivPfp);
+        Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
+                .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
         tvName.setText("Hello " + user.getDisplayName());
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +80,8 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d(TAG, "complete");
-                        Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop().placeholder(R.drawable.blankpfp).into(ivPfp);
+                        Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
+                                .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
                         Intent i = new Intent("newpfp");
                         LocalBroadcastManager.getInstance(ProfileActivity.this).sendBroadcast(i);
                     }

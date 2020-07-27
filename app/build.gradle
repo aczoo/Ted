@@ -59,9 +59,4 @@ dependencies {
     implementation 'io.grpc:grpc-core:1.27.2'
     implementation 'ai.api:sdk:2.0.7@aar'
     implementation 'ai.api:libai:1.6.12'
-
-
-
-
-
 }

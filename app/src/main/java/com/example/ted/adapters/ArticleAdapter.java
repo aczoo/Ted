@@ -3,6 +3,7 @@ package com.example.ted.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
@@ -24,10 +25,17 @@ import com.example.ted.ChatActivity;
 import com.example.ted.MainActivity;
 import com.example.ted.R;
 import com.example.ted.models.Article;
+import com.facebook.stetho.inspector.protocol.module.Database;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -36,6 +44,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     private String TAG = "ArticleAdapter";
     Context context;
     List<Article> articles;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
 
     public ArticleAdapter(Context context, List<Article> articles) {
         this.context = context;
@@ -45,11 +55,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            if(viewType ==1)
-                return new welcomeViewHolder(LayoutInflater.from(context).inflate(R.layout.item_welcome, parent, false));
-            else
-                return new articleViewHolder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
+        if (viewType == 1)
+            return new welcomeViewHolder(LayoutInflater.from(context).inflate(R.layout.item_welcome, parent, false));
+        else
+            return new articleViewHolder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
     }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Article article = articles.get(position);
@@ -60,35 +71,42 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public int getItemCount() {
         return articles.size();
     }
+
     @Override
     public int getItemViewType(int position) {
         if (position == 0) return 1;
         else return 2;
     }
+
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
         }
+
         public void bind(Article article) {
         }
     }
-    public class welcomeViewHolder extends ViewHolder implements View.OnClickListener{
+
+    public class welcomeViewHolder extends ViewHolder implements View.OnClickListener {
         public welcomeViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
         }
+
         @Override
         public void onClick(View view) {
             Intent i = new Intent(context, ChatActivity.class);
             i.putExtra("x", 948);
-            i.putExtra("y",1830);
+            i.putExtra("y", 1830);
             context.startActivity(i);
         }
     }
+
     public class articleViewHolder extends ViewHolder implements View.OnClickListener {
         TextView tvTitle, tvAuthor, tvDate;
         ImageView ivThumbnail;
         LottieAnimationView heart, heartbreak;
+
         public articleViewHolder(@NonNull final View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
@@ -97,6 +115,37 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             ivThumbnail = itemView.findViewById(R.id.ivPicture);
             heart = itemView.findViewById(R.id.heart);
             heartbreak = itemView.findViewById(R.id.heartbreak);
+            itemView.setOnClickListener(this);
+            /*itemView.setOnTouchListener(new OnDoubleTapListener() {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+                   onClick(itemView);
+                   return true;
+                }
+                @Override
+                public boolean onDoubleTap(MotionEvent motionEvent) {
+                    if (heart.getVisibility()==View.GONE){
+                        heartbreak.playAnimation();
+                        return true;
+                    }
+                    heart.playAnimation();
+                    return true;
+                }
+            });*/
+        }
+
+        @Override
+        public void bind(@NotNull final Article article) {
+            tvTitle.setText(article.getTitle());
+            if (article.getAuthor() == null) {
+                View bar = itemView.findViewById(R.id.vBar);
+                bar.setVisibility(View.GONE);
+            }
+            tvAuthor.setText(article.getAuthor());
+            tvDate.setText(article.getTimeAgo());
+            String url = article.getImageUrl();
+            Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15))
+                    .thumbnail(Glide.with(itemView.getContext()).load(R.drawable.noresponse)).into(ivThumbnail);
             heart.addAnimatorListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
@@ -133,6 +182,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 @Override
                 public void onAnimationCancel(Animator animator) {
                 }
+
                 @Override
                 public void onAnimationRepeat(Animator animator) {
 
@@ -142,46 +192,17 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     heart.playAnimation();
-                }
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put((String)article.getId(),true);
+                    db.updateChildren(map);                    }
             });
             heartbreak.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     heartbreak.playAnimation();
+                    // delete from firebase
                 }
             });
-            itemView.setOnClickListener(this);
-            /*itemView.setOnTouchListener(new OnDoubleTapListener() {
-                @Override
-                public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-                   onClick(itemView);
-                   return true;
-                }
-                @Override
-                public boolean onDoubleTap(MotionEvent motionEvent) {
-                    if (heart.getVisibility()==View.GONE){
-                        heartbreak.playAnimation();
-                        return true;
-                    }
-                    heart.playAnimation();
-                    return true;
-                }
-            });*/
-
-        }
-        @Override
-        public void bind(@NotNull Article article) {
-            tvTitle.setText(article.getTitle());
-            if (article.getAuthor() == null) {
-                View bar = itemView.findViewById(R.id.vBar);
-                bar.setVisibility(View.GONE);
-            }
-            tvAuthor.setText(article.getAuthor());
-            tvDate.setText(article.getTimeAgo());
-            String url = article.getImageUrl();
-            Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15))
-                    .thumbnail(Glide.with(itemView.getContext()).load(R.drawable.noresponse)).into(ivThumbnail);
-
         }
 
         @Override
