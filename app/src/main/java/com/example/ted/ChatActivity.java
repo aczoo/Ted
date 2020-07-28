@@ -195,7 +195,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
-        QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/Amendments").build();
+        QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA").build();
         new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
     }
 
@@ -210,7 +210,7 @@ public class ChatActivity extends AppCompatActivity {
             ChatClient request = new ChatClient(ChatActivity.this, (ai.api.android.AIDataService) aiDataService, customAIServiceContext);
             request.execute(aiRequest);*/
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
-            QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/Amendments").build();
+            QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA").build();
             new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
             showTextView(null, BOT);
 
