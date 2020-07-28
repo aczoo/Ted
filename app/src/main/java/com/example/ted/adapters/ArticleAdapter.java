@@ -28,8 +28,11 @@ import com.example.ted.models.Article;
 import com.facebook.stetho.inspector.protocol.module.Database;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -188,19 +191,33 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
                 }
             });
+            final DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("likes");
+            db.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.hasChild(article.getId())){
+                        heart.setVisibility(View.GONE);
+                        heartbreak.setVisibility(View.VISIBLE);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.w(TAG, "onCancelled: ", error.toException());
+                }
+            });
             heart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     heart.playAnimation();
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put((String)article.getId(),true);
+                    map.put(article.getId(),true);
                     db.updateChildren(map);                    }
             });
             heartbreak.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     heartbreak.playAnimation();
-                    // delete from firebase
+                    db.child(article.getId()).removeValue();
                 }
             });
         }

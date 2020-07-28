@@ -42,7 +42,7 @@ public class SignUpActivity extends LoginActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("likes","hi");
+                            map.put("likes","none");
                             db.child(user.getUid()).updateChildren(map);
                             updateUI(user);
                         } else {

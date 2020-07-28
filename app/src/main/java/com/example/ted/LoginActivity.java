@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     public LoginButton btnFacebook;
     public CheckBox checkBox;
     public TextView tvSignUp, tvError;
+
     @Override
     public void onStart() {
         super.onStart();
@@ -55,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,9 +102,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         tvSignUp = findViewById(R.id.tvSignUp);
-        tvSignUp.setOnClickListener(new View.OnClickListener(){
+        tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Log.d(TAG, "Clicked Sign Up");
                 Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(i);
@@ -110,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         tvError = findViewById(R.id.tvErrorMessage);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -127,23 +130,18 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (task.getResult().getAdditionalUserInfo().isNewUser()){
-                                DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put("likes","hi");
-                                db.child(user.getUid()).updateChildren(map);
-                            }
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            String errorCode = ((FirebaseAuthException)task.getException()).getErrorCode();
+                            String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
                             showError(errorCode);
                             updateUI(null);
                         }
                     }
                 });
     }
+
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -155,6 +153,13 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put("likes", "none");
+                                db.child(user.getUid()).updateChildren(map);
+
+                            }
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -169,27 +174,28 @@ public class LoginActivity extends AppCompatActivity {
 
 
     protected void updateUI(FirebaseUser user) {
-        if (user != null){
+        if (user != null) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
             finish();
         }
     }
-    protected void showError(String errorCode){
+
+    protected void showError(String errorCode) {
         Dictionary em = new Hashtable();
         em.put("ERROR_INVALID_CUSTOM_TOKEN", "The custom token format is incorrect. Please check the documentation.");
-        em.put("ERROR_CUSTOM_TOKEN_MISMATCH","The custom token corresponds to a different audience.");
-        em.put("ERROR_INVALID_CREDENTIAL","The supplied auth credential is malformed or has expired.");
+        em.put("ERROR_CUSTOM_TOKEN_MISMATCH", "The custom token corresponds to a different audience.");
+        em.put("ERROR_INVALID_CREDENTIAL", "The supplied auth credential is malformed or has expired.");
         em.put("ERROR_INVALID_EMAIL", "The email address is badly formatted.");
         em.put("ERROR_WRONG_PASSWORD", "The password is invalid.");
-        em.put("ERROR_USER_MISMATCH","The supplied credentials do not correspond to the previously signed in user." );
-        em.put("ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL","An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.");
-        em.put("ERROR_EMAIL_ALREADY_IN_USE","The email address is already in use by another account.");
-        em.put("ERROR_USER_DISABLED","The user account has been disabled by an administrator." );
+        em.put("ERROR_USER_MISMATCH", "The supplied credentials do not correspond to the previously signed in user.");
+        em.put("ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL", "An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.");
+        em.put("ERROR_EMAIL_ALREADY_IN_USE", "The email address is already in use by another account.");
+        em.put("ERROR_USER_DISABLED", "The user account has been disabled by an administrator.");
         em.put("ERROR_USER_NOT_FOUND", "There is no user record corresponding to this identifier. The user may have been deleted.");
-        em.put("ERROR_WEAK_PASSWORD","The given password is invalid. It must 6 characters at least.");
+        em.put("ERROR_WEAK_PASSWORD", "The given password is invalid. It must 6 characters at least.");
         String ec = (String) em.get(errorCode);
-        if (ec!=null)
+        if (ec != null)
             tvError.setText(ec);
     }
 }
