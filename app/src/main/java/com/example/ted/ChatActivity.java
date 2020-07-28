@@ -37,12 +37,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.dialogflow.v2.DetectIntentResponse;
-import com.google.cloud.dialogflow.v2.QueryInput;
-import com.google.cloud.dialogflow.v2.SessionName;
-import com.google.cloud.dialogflow.v2.SessionsClient;
-import com.google.cloud.dialogflow.v2.SessionsSettings;
-import com.google.cloud.dialogflow.v2.TextInput;
+import com.google.cloud.dialogflow.v2beta1.DetectIntentResponse;
+import com.google.cloud.dialogflow.v2beta1.QueryInput;
+import com.google.cloud.dialogflow.v2beta1.QueryParameters;
+import com.google.cloud.dialogflow.v2beta1.SessionName;
+import com.google.cloud.dialogflow.v2beta1.SessionsClient;
+import com.google.cloud.dialogflow.v2beta1.SessionsSettings;
+import com.google.cloud.dialogflow.v2beta1.TextInput;
+import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers;
 
 import ai.api.android.AIDataService;
 import ai.api.AIServiceContext;
@@ -193,7 +195,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
-        new ChatClient(ChatActivity.this, session, sessionsClient, queryInput).execute();
+        QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/Amendments").build();
+        new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
     }
 
     private void sendMessage(View view) {
@@ -207,16 +210,16 @@ public class ChatActivity extends AppCompatActivity {
             ChatClient request = new ChatClient(ChatActivity.this, (ai.api.android.AIDataService) aiDataService, customAIServiceContext);
             request.execute(aiRequest);*/
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
-            new ChatClient(ChatActivity.this, session, sessionsClient, queryInput).execute();
+            QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/Amendments").build();
+            new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
             showTextView(null, BOT);
 
         }
     }
 
-    public void callback(DetectIntentResponse response) {
+    public void callback(String response) {
         if (response != null) {
-
-            String botReply = response.getQueryResult().getFulfillmentText();
+            String botReply = response;
             Log.d(TAG, "Bot Reply: " + botReply);
             llChat.removeView(llChat.findViewById(1));
             showTextView(botReply, BOT);
