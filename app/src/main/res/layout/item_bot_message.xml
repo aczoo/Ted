@@ -13,8 +13,9 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
             app:srcCompat="@drawable/ted" />
 
         <LinearLayout
@@ -29,6 +30,16 @@
             android:background="@drawable/bot_chat"
             android:gravity="start|center_vertical"
             android:orientation="vertical">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/typing"
+                android:layout_width="90dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/typing" />
 
             <TextView
                 android:id="@+id/chatMsg"
@@ -50,6 +61,7 @@
             </FrameLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>

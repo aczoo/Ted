@@ -23,6 +23,7 @@
         android:layout_height="50dp"
         android:backgroundTint="@color/colorPrimaryDark"
         android:hint="Password"
+        android:inputType="text"
         android:textSize="24sp" />
 
     <LinearLayout

@@ -31,6 +31,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.ted.clients.ChatClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.gax.core.FixedCredentialsProvider;
@@ -59,15 +60,13 @@ public class ChatActivity extends AppCompatActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
     private static final int USER = 10001;
     private static final int BOT = 10002;
-    private final int audioRequest = 2222;
     private String uuid = UUID.randomUUID().toString();
-
     private SessionsClient sessionsClient;
     private SessionName session;
     private LinearLayout llChat;
     private EditText etQuery;
     private View chatLayout;
-    private int fabx,faby;
+    private int fabx, faby;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +74,8 @@ public class ChatActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.do_not_move, R.anim.do_not_move);
         setContentView(R.layout.activity_chat);
         chatLayout = findViewById(R.id.parentChat);
-        fabx=getIntent().getIntExtra("x", chatLayout.getRight());
-        faby=getIntent().getIntExtra("y", chatLayout.getBottom());
+        fabx = getIntent().getIntExtra("x", chatLayout.getRight());
+        faby = getIntent().getIntExtra("y", chatLayout.getBottom());
         if (savedInstanceState == null) {
             chatLayout.setVisibility(View.INVISIBLE);
             ViewTreeObserver viewTreeObserver = chatLayout.getViewTreeObserver();
@@ -141,6 +140,7 @@ public class ChatActivity extends AppCompatActivity {
         chatLayout.setVisibility(View.VISIBLE);
         circularReveal.start();
     }
+
     @Override
     public void onBackPressed() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -150,15 +150,18 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onAnimationStart(Animator animator) {
                 }
+
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     chatLayout.setVisibility(View.INVISIBLE);
                     finish();
                 }
+
                 @Override
                 public void onAnimationCancel(Animator animator) {
 
                 }
+
                 @Override
                 public void onAnimationRepeat(Animator animator) {
 
@@ -166,8 +169,7 @@ public class ChatActivity extends AppCompatActivity {
             });
             circularReveal.setDuration(500);
             circularReveal.start();
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -188,10 +190,12 @@ public class ChatActivity extends AppCompatActivity {
         }
 
     }
-    private void welcomeMessage(){
+
+    private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
         new ChatClient(ChatActivity.this, session, sessionsClient, queryInput).execute();
     }
+
     private void sendMessage(View view) {
         String msg = etQuery.getText().toString();
         if (msg.trim().isEmpty()) {
@@ -204,15 +208,17 @@ public class ChatActivity extends AppCompatActivity {
             request.execute(aiRequest);*/
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
             new ChatClient(ChatActivity.this, session, sessionsClient, queryInput).execute();
+            showTextView(null, BOT);
 
         }
     }
 
     public void callback(DetectIntentResponse response) {
         if (response != null) {
-            // process aiResponse here
+
             String botReply = response.getQueryResult().getFulfillmentText();
-            Log.d(TAG, "V2 Bot Reply: " + botReply);
+            Log.d(TAG, "Bot Reply: " + botReply);
+            llChat.removeView(llChat.findViewById(1));
             showTextView(botReply, BOT);
         } else {
             Log.d(TAG, "Bot Reply: Null");
@@ -236,7 +242,15 @@ public class ChatActivity extends AppCompatActivity {
         layout.setFocusableInTouchMode(true);
         llChat.addView(layout); // move focus to text view to automatically make it scroll up if softfocus
         TextView tv = layout.findViewById(R.id.chatMsg);
-        tv.setText(message);
+        if (message != null) {
+            layout.setId(0);
+            tv.setText(message);
+        } else {
+            layout.setId(1);
+            tv.setVisibility(View.GONE);
+            LottieAnimationView typing = layout.findViewById(R.id.typing);
+            typing.setVisibility(View.VISIBLE);
+        }
         layout.requestFocus();
         etQuery.requestFocus(); // change focus back to edit text to continue typing
     }
@@ -250,7 +264,8 @@ public class ChatActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(ChatActivity.this);
         return (FrameLayout) inflater.inflate(R.layout.item_bot_message, null);
     }
-    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
+
+    public BroadcastReceiver logoutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             finish();
