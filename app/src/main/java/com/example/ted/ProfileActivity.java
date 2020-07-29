@@ -59,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
                 .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
-        tvName.setText("Hello " + user.getDisplayName());
+        tvName.setText(user.getDisplayName()+"!");
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

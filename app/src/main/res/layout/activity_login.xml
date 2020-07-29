@@ -9,6 +9,16 @@
 
 
     <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:hint="Frank Sinatra"
+        android:inputType="textPersonName"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <EditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
         android:layout_height="50dp"

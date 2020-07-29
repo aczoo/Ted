@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -23,9 +24,11 @@ public class SignUpActivity extends LoginActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         btnLogin.setText("Sign Up");
+        btnFacebook.setVisibility(View.GONE);
+        etName.setVisibility(View.VISIBLE);
         tvSignUp.setOnClickListener(null);
         tvSignUp.setVisibility(View.GONE);
-        btnFacebook.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -40,6 +43,9 @@ public class SignUpActivity extends LoginActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(etName.getText().toString()).build();
+                            user.updateProfile(profileUpdates);
                             DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("likes","none");

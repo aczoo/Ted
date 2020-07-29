@@ -24,12 +24,11 @@
 
             <TextView
                 android:id="@+id/tvName"
-                android:layout_width="127dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="60dp"
+                android:layout_toEndOf="@id/rlPfp"
                 android:text="Frank"
                 android:textSize="18sp" />
 
@@ -39,26 +38,31 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvName"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="65dp"
+                android:layout_marginStart="246dp"
+                android:layout_marginTop="111dp"
                 android:layout_marginBottom="144dp"
                 android:onClick="logout"
                 android:text="Log out" />
 
             <RelativeLayout
-                android:layout_width="154dp"
-                android:layout_height="154dp"
-                android:layout_alignParentStart="false"
+                android:id="@+id/rlPfp"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="false"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="false"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="false"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/circle">
 
                 <ImageView
                     android:id="@+id/ivPfp"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_centerInParent="true"
                     tools:srcCompat="@tools:sample/avatars" />
 

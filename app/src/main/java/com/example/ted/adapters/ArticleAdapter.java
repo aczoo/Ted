@@ -119,22 +119,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             heart = itemView.findViewById(R.id.heart);
             heartbreak = itemView.findViewById(R.id.heartbreak);
             itemView.setOnClickListener(this);
-            /*itemView.setOnTouchListener(new OnDoubleTapListener() {
-                @Override
-                public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-                   onClick(itemView);
-                   return true;
-                }
-                @Override
-                public boolean onDoubleTap(MotionEvent motionEvent) {
-                    if (heart.getVisibility()==View.GONE){
-                        heartbreak.playAnimation();
-                        return true;
-                    }
-                    heart.playAnimation();
-                    return true;
-                }
-            });*/
         }
 
         @Override

@@ -8,6 +8,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.ted.clients.ChatClient;
+import com.example.ted.models.ChatMessage;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -45,6 +47,15 @@ import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.SessionsSettings;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import ai.api.android.AIDataService;
 import ai.api.AIServiceContext;
@@ -55,6 +66,10 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 // removed implements AIListener
@@ -65,6 +80,9 @@ public class ChatActivity extends AppCompatActivity {
     private String uuid = UUID.randomUUID().toString();
     private SessionsClient sessionsClient;
     private SessionName session;
+    private FirebaseUser user;
+    private DatabaseReference db;
+    private QueryParameters queryParam;
     private LinearLayout llChat;
     private EditText etQuery;
     private View chatLayout;
@@ -95,7 +113,6 @@ public class ChatActivity extends AppCompatActivity {
                 });
             }
         }
-
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
         final ScrollView svChat = findViewById(R.id.chatScrollView);
         svChat.post(new Runnable() {
@@ -132,6 +149,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         startChat();
+        List<String> knowledgebases = new ArrayList<>();
+        knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA");
+        knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg");
+        queryParam = QueryParameters.newBuilder().addAllKnowledgeBaseNames(knowledgebases).build();
         welcomeMessage();
     }
 
@@ -182,11 +203,30 @@ public class ChatActivity extends AppCompatActivity {
             InputStream stream = getResources().openRawResource(getResources().getIdentifier("client_secrets", "raw", getPackageName()));
             GoogleCredentials credentials = GoogleCredentials.fromStream(stream);
             String projectId = ((ServiceAccountCredentials) credentials).getProjectId();
-
             SessionsSettings.Builder settingsBuilder = SessionsSettings.newBuilder();
             SessionsSettings sessionsSettings = settingsBuilder.setCredentialsProvider(FixedCredentialsProvider.create(credentials)).build();
             sessionsClient = SessionsClient.create(sessionsSettings);
             session = SessionName.of(projectId, uuid);
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("messages");
+            Query previous = db.orderByChild("timestamp");
+            previous.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot message:snapshot.getChildren()){
+                        if ((Boolean)message.child("bot").getValue()){
+                            showTextView((String) message.child("msgText").getValue(), BOT);
+                        }
+                        else{
+                            showTextView((String) message.child("msgText").getValue(), USER);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,7 +235,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
-        QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA").build();
         new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
     }
 
@@ -206,27 +245,32 @@ public class ChatActivity extends AppCompatActivity {
         } else {
             showTextView(msg, USER);
             etQuery.setText("");
+            messageToDB(msg, false);
+            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
+            new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
+            showTextView(null, BOT);
             /*aiRequest.setQuery(msg);
             ChatClient request = new ChatClient(ChatActivity.this, (ai.api.android.AIDataService) aiDataService, customAIServiceContext);
             request.execute(aiRequest);*/
-            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
-            QueryParameters queryParam = QueryParameters.newBuilder().addKnowledgeBaseNames("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA").build();
-            new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
-            showTextView(null, BOT);
-
         }
     }
 
     public void callback(String response) {
         if (response != null) {
-            String botReply = response;
-            Log.d(TAG, "Bot Reply: " + botReply);
+            Log.d(TAG, "Bot Reply: " + response);
+            messageToDB(response, true);
             llChat.removeView(llChat.findViewById(1));
-            showTextView(botReply, BOT);
+            showTextView(response, BOT);
         } else {
             Log.d(TAG, "Bot Reply: Null");
             showTextView("There was some communication issue. Please Try again!", BOT);
         }
+    }
+    private void messageToDB(String msg, Boolean isBot) {
+        HashMap<String, Object> map = new HashMap<>();
+        ChatMessage message = new ChatMessage(msg, ServerValue.TIMESTAMP, isBot);
+        map.put(UUID.randomUUID().toString(), message);
+        db.updateChildren(map);
     }
 
     private void showTextView(String message, int type) {

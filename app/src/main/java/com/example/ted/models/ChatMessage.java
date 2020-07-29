@@ -1,14 +1,17 @@
 package com.example.ted.models;
 
+import java.util.Date;
+
 public class ChatMessage {
     private String msgText;
-    private String msgUser;
+    private Object timestamp;
+    private Boolean bot;
 
 
-
-    public ChatMessage(String msgText, String msgUser){
+    public ChatMessage(String msgText,Object timestamp, Boolean bot){
         this.msgText = msgText;
-        this.msgUser = msgUser;
+        this.timestamp = timestamp;
+        this.bot = bot;
 
     }
 
@@ -18,16 +21,13 @@ public class ChatMessage {
     public String getMsgText() {
         return msgText;
     }
-
     public void setMsgText(String msgText) {
         this.msgText = msgText;
     }
+    public Object getTimestamp() { return timestamp; }
+    public void setTimestamp(Object timestamp) {this.timestamp = timestamp; }
+    public Boolean getBot(){return bot;}
+    public void setBot(Boolean bot){this.bot = bot;}
 
-    public String getMsgUser() {
-        return msgUser;
-    }
 
-    public void setMsgUser(String msgUser) {
-        this.msgUser = msgUser;
-    }
 }

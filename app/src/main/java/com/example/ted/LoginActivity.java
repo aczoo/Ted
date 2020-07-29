@@ -30,6 +30,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "LoginActivity";
     private CallbackManager mCallbackManager;
     public FirebaseAuth mAuth;
-    public EditText etUsername, etPassword;
+    public EditText etName, etUsername, etPassword;
     public Button btnLogin;
     public LoginButton btnFacebook;
     public CheckBox checkBox;
@@ -52,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                 updateUI(null);
             }
         });
+        etName = findViewById(R.id.etName);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         etPassword.setTransformationMethod(new PasswordTransformationMethod());
