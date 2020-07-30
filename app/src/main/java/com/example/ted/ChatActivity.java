@@ -59,10 +59,14 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 // removed implements AIListener
@@ -236,9 +240,9 @@ public class ChatActivity extends AppCompatActivity {
         if (msg.trim().isEmpty()) {
             Toast.makeText(ChatActivity.this, "Messages can't be empty!", Toast.LENGTH_LONG).show();
         } else {
+            messageToDB(msg, USER);
             showTextView(msg, USER);
             etQuery.setText("");
-            messageToDB(msg, USER);
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
             new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
             showTextView(null, BOT);
@@ -263,12 +267,23 @@ public class ChatActivity extends AppCompatActivity {
 
         HashMap<String, Object> map = new HashMap<>();
         ChatMessage message = new ChatMessage(msg, ServerValue.TIMESTAMP, isBot, sessionStart);
+        showTimeStamp(message.getSessionStart());
         sessionStart=null;
         map.put(UUID.randomUUID().toString(), message);
         db.updateChildren(map);
     }
-    private void showTimeStamp(String timestamp){
+    private void showTimeStamp(String timestamp) {
         if(timestamp!=null){
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a d MMM", Locale.ENGLISH);
+            TimeZone tz = TimeZone.getDefault();
+            try {
+                Date temp = sdf.parse(timestamp);
+                int currentOffsetFromUTC = tz.getRawOffset() + (tz.inDaylightTime(temp) ? tz.getDSTSavings() : 0);
+                timestamp = sdf.format(temp.getTime()+currentOffsetFromUTC);
+        } catch (ParseException e) {
+                Log.d(TAG, "Could not parse timestamp");
+                e.printStackTrace();
+            }
             TextView tvTime = new TextView(ChatActivity.this);
             tvTime.setText(timestamp);
             tvTime.setTextSize(10);
@@ -277,7 +292,8 @@ public class ChatActivity extends AppCompatActivity {
             tvTime.setPadding(0,10,0,10);
             tvTime.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
-            llChat.addView(tvTime);}
+            llChat.addView(tvTime);
+        }
     }
     private void showTextView(String message, int type) {
         FrameLayout layout;
