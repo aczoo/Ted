@@ -14,10 +14,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,14 +58,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import ai.api.android.AIDataService;
-import ai.api.AIServiceContext;
-import ai.api.AIServiceContextBuilder;
-import ai.api.android.AIConfiguration;
-import ai.api.android.AIService;
-import ai.api.model.AIRequest;
-import ai.api.model.AIResponse;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,8 +68,8 @@ import java.util.UUID;
 // removed implements AIListener
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
-    private static final int USER = 10001;
-    private static final int BOT = 10002;
+    private static final int USER = 101;
+    private static final int BOT = 102;
     private String uuid = UUID.randomUUID().toString();
     private SessionsClient sessionsClient;
     private SessionName session;
@@ -87,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText etQuery;
     private View chatLayout;
     private int fabx, faby;
+    private Date sessionStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +147,6 @@ public class ChatActivity extends AppCompatActivity {
         knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA");
         knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg");
         queryParam = QueryParameters.newBuilder().addAllKnowledgeBaseNames(knowledgebases).build();
-        welcomeMessage();
     }
 
     private void circularRevealActivity() {
@@ -207,19 +200,20 @@ public class ChatActivity extends AppCompatActivity {
             SessionsSettings sessionsSettings = settingsBuilder.setCredentialsProvider(FixedCredentialsProvider.create(credentials)).build();
             sessionsClient = SessionsClient.create(sessionsSettings);
             session = SessionName.of(projectId, uuid);
+            sessionStart=new Date();
             user = FirebaseAuth.getInstance().getCurrentUser();
             db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("messages");
             Query previous = db.orderByChild("timestamp");
             previous.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()){
+                        welcomeMessage();
+                        return;
+                    }
                     for (DataSnapshot message:snapshot.getChildren()){
-                        if ((Boolean)message.child("bot").getValue()){
-                            showTextView((String) message.child("msgText").getValue(), BOT);
-                        }
-                        else{
-                            showTextView((String) message.child("msgText").getValue(), USER);
-                        }
+                        showTimeStamp((String)message.child("sessionStart").getValue());
+                        showTextView((String) message.child("msgText").getValue(), Math.toIntExact((long)message.child("bot").getValue()));
                     }
                 }
                 @Override
@@ -227,12 +221,11 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
     private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
         new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
@@ -245,7 +238,7 @@ public class ChatActivity extends AppCompatActivity {
         } else {
             showTextView(msg, USER);
             etQuery.setText("");
-            messageToDB(msg, false);
+            messageToDB(msg, USER);
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
             new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
             showTextView(null, BOT);
@@ -258,7 +251,7 @@ public class ChatActivity extends AppCompatActivity {
     public void callback(String response) {
         if (response != null) {
             Log.d(TAG, "Bot Reply: " + response);
-            messageToDB(response, true);
+            messageToDB(response, BOT);
             llChat.removeView(llChat.findViewById(1));
             showTextView(response, BOT);
         } else {
@@ -266,13 +259,26 @@ public class ChatActivity extends AppCompatActivity {
             showTextView("There was some communication issue. Please Try again!", BOT);
         }
     }
-    private void messageToDB(String msg, Boolean isBot) {
+    private void messageToDB(String msg, int isBot) {
+
         HashMap<String, Object> map = new HashMap<>();
-        ChatMessage message = new ChatMessage(msg, ServerValue.TIMESTAMP, isBot);
+        ChatMessage message = new ChatMessage(msg, ServerValue.TIMESTAMP, isBot, sessionStart);
+        sessionStart=null;
         map.put(UUID.randomUUID().toString(), message);
         db.updateChildren(map);
     }
-
+    private void showTimeStamp(String timestamp){
+        if(timestamp!=null){
+            TextView tvTime = new TextView(ChatActivity.this);
+            tvTime.setText(timestamp);
+            tvTime.setTextSize(10);
+            tvTime.setTextColor(getResources().getColor(R.color.colorAccent));
+            tvTime.setGravity(Gravity.CENTER_HORIZONTAL);
+            tvTime.setPadding(0,10,0,10);
+            tvTime.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            llChat.addView(tvTime);}
+    }
     private void showTextView(String message, int type) {
         FrameLayout layout;
         switch (type) {
