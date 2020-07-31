@@ -46,28 +46,7 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        if (msg =="Hi"){
-            return "Hi, it's Ted";
-        }
-        OkHttpClient duck = new OkHttpClient();
-        //msg= msg.replace(" ","%20" );
-        String url = "https://api.duckduckgo.com/?q="+msg  +"&format=json&pretty=1";
-        Log.d("duck", url);
-        Request request = new Request.Builder().url(url).build();
         try {
-            Response response = duck.newCall(request).execute();
-            JSONObject body = new JSONObject(response.body().string());
-            if (body.get("Abstract").toString().length()==0){
-                Log.d("duck", body.getJSONArray("RelatedTopics").getJSONObject(0).toString());
-                return body.getJSONArray("RelatedTopics").getJSONObject(0).get("Text").toString();
-
-            }
-            return body.get("Abstract").toString();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-            return "Oops, I don't know the answer";
-        }
-       /* try {
             DetectIntentRequest detectIntentRequest =
                     DetectIntentRequest.newBuilder()
                             .setSession(session.toString())
@@ -80,16 +59,37 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
                 Answer knowledgeAnswer = queryResult.getKnowledgeAnswers().getAnswersList().get(0);
                 if (queryResult.getIntentDetectionConfidence() < knowledgeAnswer.getMatchConfidence()) {
                     return knowledgeAnswer.getAnswer();
+
                 }
             }
             return queryResult.getFulfillmentText();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
+        return null;
     }
 
     @Override
     protected void onPostExecute(String response) {
         ((ChatActivity) activity).callback(response);
+    }
+    private String duckResponse(){
+        OkHttpClient duck = new OkHttpClient();
+        msg= msg.replace(" ","%20" );
+        String url = "https://api.duckduckgo.com/?q="+msg  +"&format=json&pretty=1";
+        Request request = new Request.Builder().url(url).build();
+        try {
+            Response response = duck.newCall(request).execute();
+            JSONObject body = new JSONObject(response.body().string());
+            if (body.get("Abstract").toString().length()==0){
+                Log.d("duck", body.getJSONArray("RelatedTopics").getJSONObject(0).toString());
+                return body.getJSONArray("RelatedTopics").getJSONObject(0).get("Text").toString();
+
+            }
+            return body.get("Abstract").toString();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

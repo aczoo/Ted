@@ -89,12 +89,19 @@ public class Article {
         body = body.replaceAll("<p>", "\n");
         body = body.replaceAll("</p>", "\n");
         sb = new StringBuilder(body);
-        int index = sb.indexOf("<a href=\"");
+        int index = sb.indexOf("<aside class=");
+        while(index>=0){
+            int index2 =sb.indexOf("</aside>", index);
+            sb.delete(index, index2+8);
+            index = sb.indexOf("<aside class=");
+        }
+        index = sb.indexOf("<a href=\"");
         while (index >= 0) {
             sb.delete(index, index + 9);
             setLink(index);
             index = sb.indexOf("<a href=\"");
         }
+
         body = sb.toString();
     }
 

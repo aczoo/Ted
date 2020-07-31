@@ -99,7 +99,24 @@ public class ProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+       /* final DatabaseReference likesDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("likes");
+        Query likesQuery = likesDB.orderByValue();
+        likesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot message:snapshot.getChildren()){
+                    FrameLayout session = getHistoryLayout();
+                    llActivity.addView(session,1);
+                    TextView tv = session.findViewById(R.id.tvDescription);
+                    tv.setText("Liked " +message.getValue());
 
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });*/
     }
 
     @Override

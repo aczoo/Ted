@@ -150,6 +150,7 @@ public class ChatActivity extends AppCompatActivity {
         List<String> knowledgebases = new ArrayList<>();
         knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA");
         knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg");
+        knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MTQ3NDg4MjY5ODQ3NTQ3MDg0OA");
         queryParam = QueryParameters.newBuilder().addAllKnowledgeBaseNames(knowledgebases).build();
     }
 
