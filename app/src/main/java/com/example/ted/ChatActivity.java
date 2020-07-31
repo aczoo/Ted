@@ -193,8 +193,6 @@ public class ChatActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
     private void startChat() {
         try {
             InputStream stream = getResources().openRawResource(getResources().getIdentifier("client_secrets", "raw", getPackageName()));
@@ -232,7 +230,7 @@ public class ChatActivity extends AppCompatActivity {
     }
     private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
-        new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
+        new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam, "Hi").execute();
     }
 
     private void sendMessage(View view) {
@@ -244,14 +242,13 @@ public class ChatActivity extends AppCompatActivity {
             showTextView(msg, USER);
             etQuery.setText("");
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msg).setLanguageCode("en-US")).build();
-            new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam).execute();
+            new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam, msg).execute();
             showTextView(null, BOT);
             /*aiRequest.setQuery(msg);
             ChatClient request = new ChatClient(ChatActivity.this, (ai.api.android.AIDataService) aiDataService, customAIServiceContext);
             request.execute(aiRequest);*/
         }
     }
-
     public void callback(String response) {
         if (response != null) {
             Log.d(TAG, "Bot Reply: " + response);
@@ -260,6 +257,7 @@ public class ChatActivity extends AppCompatActivity {
             showTextView(response, BOT);
         } else {
             Log.d(TAG, "Bot Reply: Null");
+            llChat.removeView(llChat.findViewById(1));
             showTextView("There was some communication issue. Please Try again!", BOT);
         }
     }
@@ -342,7 +340,6 @@ public class ChatActivity extends AppCompatActivity {
     };
 
     /*
-
     public void onCreateAudio(){
         private AIDataService aiDataService;
         private AIServiceContext customAIServiceContext;

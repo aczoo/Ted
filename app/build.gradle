@@ -54,6 +54,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     compile 'com.google.cloud:google-cloud-dialogflow:2.1.0'
+    compile group: 'com.google.cloud', name: 'google-cloud-asset', version: '0.86.0-beta'
     testImplementation 'junit:junit:4.12'
     implementation 'io.grpc:grpc-okhttp:1.27.2'
     implementation 'io.grpc:grpc-core:1.27.2'

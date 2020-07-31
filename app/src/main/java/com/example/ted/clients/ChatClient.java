@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.ted.ChatActivity;
+import com.google.api.client.json.Json;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2beta1.QueryInput;
@@ -14,6 +15,16 @@ import com.google.cloud.dialogflow.v2beta1.SessionName;
 import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers.Answer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class ChatClient extends AsyncTask<Void, Void, String> {
 
@@ -22,18 +33,41 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
     private SessionsClient sessionsClient;
     private QueryInput queryInput;
     private QueryParameters queryParam;
+    private String msg;
 
-    public ChatClient(Activity activity, SessionName session, SessionsClient sessionsClient, QueryInput queryInput, QueryParameters queryParam) {
+    public ChatClient(Activity activity, SessionName session, SessionsClient sessionsClient, QueryInput queryInput, QueryParameters queryParam, String msg) {
         this.activity = activity;
         this.session = session;
         this.sessionsClient = sessionsClient;
         this.queryInput = queryInput;
         this.queryParam = queryParam;
+        this.msg = msg;
     }
 
     @Override
     protected String doInBackground(Void... voids) {
+        if (msg =="Hi"){
+            return "Hi, it's Ted";
+        }
+        OkHttpClient duck = new OkHttpClient();
+        //msg= msg.replace(" ","%20" );
+        String url = "https://api.duckduckgo.com/?q="+msg  +"&format=json&pretty=1";
+        Log.d("duck", url);
+        Request request = new Request.Builder().url(url).build();
         try {
+            Response response = duck.newCall(request).execute();
+            JSONObject body = new JSONObject(response.body().string());
+            if (body.get("Abstract").toString().length()==0){
+                Log.d("duck", body.getJSONArray("RelatedTopics").getJSONObject(0).toString());
+                return body.getJSONArray("RelatedTopics").getJSONObject(0).get("Text").toString();
+
+            }
+            return body.get("Abstract").toString();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            return "Oops, I don't know the answer";
+        }
+       /* try {
             DetectIntentRequest detectIntentRequest =
                     DetectIntentRequest.newBuilder()
                             .setSession(session.toString())
@@ -51,8 +85,7 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
             return queryResult.getFulfillmentText();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return null;
+        }*/
     }
 
     @Override
