@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -194,7 +195,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 public void onClick(View view) {
                     heart.playAnimation();
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put(article.getId(),true);
+                    map.put(article.getId(), ServerValue.TIMESTAMP);
                     db.updateChildren(map);                    }
             });
             heartbreak.setOnClickListener(new View.OnClickListener() {

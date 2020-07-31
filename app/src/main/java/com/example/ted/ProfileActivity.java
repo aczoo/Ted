@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,9 +16,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -33,8 +37,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
+
 
 import java.io.ByteArrayOutputStream;
 
@@ -46,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ImageView ivPfp, ivEdit;
     private TextView tvName;
+    private LinearLayout llActivity;
     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
     @Override
@@ -56,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
         ivPfp = findViewById(R.id.ivPfp);
         ivEdit = findViewById(R.id.ivEdit);
         tvName = findViewById(R.id.tvName);
+        llActivity = findViewById(R.id.llActivity);
 
         Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
                 .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
@@ -65,6 +76,27 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(ProfileActivity.this);
                 startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
+        });
+        final DatabaseReference messagesDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("messages");
+        Query messageQuery = messagesDB.orderByChild("timestamp");
+        messageQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()){
+                    return;
+                }
+                for (DataSnapshot message:snapshot.getChildren()){
+                    if ( message.hasChild("sessionStart")){
+                        FrameLayout session = getHistoryLayout();
+                        llActivity.addView(session,1);
+                        TextView tv = session.findViewById(R.id.tvDescription);
+                        tv.setText("Chat session started with Ted at " +message.child("sessionStart").getValue());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
 
@@ -124,6 +156,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         }
+    }
+    FrameLayout getHistoryLayout() {
+        LayoutInflater inflater = LayoutInflater.from(ProfileActivity.this);
+        return (FrameLayout) inflater.inflate(R.layout.item_history, null);
     }
 
 
