@@ -58,8 +58,10 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
             if (queryResult.hasKnowledgeAnswers()) {
                 Answer knowledgeAnswer = queryResult.getKnowledgeAnswers().getAnswersList().get(0);
                 if (queryResult.getIntentDetectionConfidence() < knowledgeAnswer.getMatchConfidence()) {
-                    return knowledgeAnswer.getAnswer();
-
+                    if (knowledgeAnswer.getMatchConfidence()>.5 ){
+                        return knowledgeAnswer.getAnswer();
+                    }
+                    return duckResponse();
                 }
             }
             return queryResult.getFulfillmentText();
@@ -73,6 +75,7 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String response) {
         ((ChatActivity) activity).callback(response);
     }
+
     private String duckResponse(){
         OkHttpClient duck = new OkHttpClient();
         msg= msg.replace(" ","%20" );
