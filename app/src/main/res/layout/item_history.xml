@@ -9,6 +9,7 @@
     android:layout_centerHorizontal="false"
     android:layout_centerVertical="false"
     android:layout_gravity="center_horizontal"
+    android:padding="10dp"
     tools:layout_editor_absoluteX="177dp"
     tools:layout_editor_absoluteY="356dp">
 

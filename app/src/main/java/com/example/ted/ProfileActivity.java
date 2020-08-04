@@ -78,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
             }
         });
-        final DatabaseReference messagesDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("messages");
+        final DatabaseReference messagesDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("activity");
         Query messageQuery = messagesDB.orderByChild("timestamp");
         messageQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -87,12 +87,15 @@ public class ProfileActivity extends AppCompatActivity {
                     return;
                 }
                 for (DataSnapshot message:snapshot.getChildren()){
-                    if ( message.hasChild("sessionStart")){
                         FrameLayout session = getHistoryLayout();
                         llActivity.addView(session,1);
                         TextView tv = session.findViewById(R.id.tvDescription);
-                        tv.setText("Chat session started with Ted at " +message.child("sessionStart").getValue());
-                    }
+                        if(!message.hasChild("bot")){
+                            tv.setText("Liked post "+ message.getKey().replaceAll("@", "/"));
+                        }
+                        else{
+                            tv.setText("Chat session started with Ted at " +message.child("sessionStart").getValue());
+                        }
                 }
             }
             @Override

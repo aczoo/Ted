@@ -35,7 +35,6 @@ public class Article {
     List<int[]> index;
     List<String> links;
     StringBuilder sb;
-
     public Article() {
     }
 

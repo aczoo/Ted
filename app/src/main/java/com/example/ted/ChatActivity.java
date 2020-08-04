@@ -78,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
     private SessionsClient sessionsClient;
     private SessionName session;
     private FirebaseUser user;
-    private DatabaseReference db;
+    private DatabaseReference userDB;
     private QueryParameters queryParam;
     private LinearLayout llChat;
     private EditText etQuery;
@@ -206,8 +206,8 @@ public class ChatActivity extends AppCompatActivity {
             session = SessionName.of(projectId, uuid);
             sessionStart=new Date();
             user = FirebaseAuth.getInstance().getCurrentUser();
-            db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("messages");
-            Query previous = db.orderByChild("timestamp");
+            userDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            Query previous = userDB.child("messages").orderByChild("timestamp");
             previous.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -268,9 +268,12 @@ public class ChatActivity extends AppCompatActivity {
         HashMap<String, Object> map = new HashMap<>();
         ChatMessage message = new ChatMessage(msg, ServerValue.TIMESTAMP, isBot, sessionStart);
         showTimeStamp(message.getSessionStart());
-        sessionStart=null;
         map.put(UUID.randomUUID().toString(), message);
-        db.updateChildren(map);
+        userDB.child("messages").updateChildren(map);
+        if (sessionStart !=null){
+            userDB.child("activity").updateChildren(map);
+        }
+        sessionStart=null;
     }
     private void showTimeStamp(String timestamp) {
         if(timestamp!=null){

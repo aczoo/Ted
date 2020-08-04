@@ -41,6 +41,7 @@ import org.parceler.Parcels;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -49,7 +50,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     Context context;
     List<Article> articles;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+    DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
 
     public ArticleAdapter(Context context, List<Article> articles) {
         this.context = context;
@@ -176,8 +177,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
                 }
             });
-            final DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("likes");
-            db.addListenerForSingleValueEvent(new ValueEventListener() {
+            userDB.child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.hasChild(article.getId())){
@@ -196,13 +196,21 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     heart.playAnimation();
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(article.getId(), ServerValue.TIMESTAMP);
-                    db.updateChildren(map);                    }
+                    userDB.child("likes").updateChildren(map);
+                    map = new HashMap<>();
+                    HashMap<String, Object> map2 = new HashMap<>();
+                    map2.put("timestamp", ServerValue.TIMESTAMP);
+                    map.put(article.getId().replaceAll("/","@"), map2);
+                    userDB.child("activity").updateChildren(map);
+                }
             });
             heartbreak.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     heartbreak.playAnimation();
-                    db.child(article.getId()).removeValue();
+                    userDB.child("likes").child(article.getId()).removeValue();
+                    userDB.child("activity").child(article.getId().replace("/","@")).removeValue();
+
                 }
             });
         }
