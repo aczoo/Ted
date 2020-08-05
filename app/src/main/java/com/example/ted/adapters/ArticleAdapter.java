@@ -39,8 +39,11 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -51,6 +54,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     List<Article> articles;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+    SimpleDateFormat sdf = new SimpleDateFormat("h:mm a d MMM", Locale.ENGLISH);
 
     public ArticleAdapter(Context context, List<Article> articles) {
         this.context = context;
@@ -200,6 +204,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     map = new HashMap<>();
                     HashMap<String, Object> map2 = new HashMap<>();
                     map2.put("timestamp", ServerValue.TIMESTAMP);
+                    map2.put("sessionStart",sdf.format(new Date()) );
+                    map2.put("title", article.getTitle());
                     map.put(article.getId().replaceAll("/","@"), map2);
                     userDB.child("activity").updateChildren(map);
                 }

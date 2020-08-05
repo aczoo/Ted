@@ -21,10 +21,16 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:background="@color/colorPrimary" />
+
             <RelativeLayout
                 android:id="@+id/rlPfp"
-                android:layout_width="123dp"
-                android:layout_height="123dp"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="false"
@@ -74,34 +80,44 @@
                 android:layout_below="@+id/tvName"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="30dp"
                 android:layout_toEndOf="@+id/rlPfp"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/accent"
                 android:onClick="logout"
                 android:text="Log out"
                 android:textColor="#FFFFFF" />
-
-            <LinearLayout
-                android:id="@+id/llActivity"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/btnLogout"
                 android:layout_alignParentBottom="false"
                 android:layout_centerHorizontal="false"
                 android:gravity="center"
+                >
+            <LinearLayout
+                android:id="@+id/llActivity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:elevation="20dp"
                     android:gravity="center"
+                    android:padding="3dp"
                     android:text="Activity"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </RelativeLayout>
     </ScrollView>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

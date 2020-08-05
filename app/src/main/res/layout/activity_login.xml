@@ -1,94 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:orientation="vertical"
-    tools:context=".LoginActivity">
+    android:background="#FFFFFF">
 
-
-    <EditText
-        android:id="@+id/etName"
+    <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="Frank Sinatra"
-        android:inputType="textPersonName"
-        android:textSize="24sp"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:alpha=".7"
+        app:srcCompat="@drawable/login" />
 
-    <EditText
-        android:id="@+id/etUsername"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="frank@gmail.com"
-        android:inputType="textPersonName"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="Password"
-        android:inputType="text"
-        android:textSize="24sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_centerInParent="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#94FFFFFF"
+        android:orientation="vertical"
+        tools:context=".LoginActivity">
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="225dp"
-            android:layout_height="wrap_content"
-            android:text="Show Password"
-            android:textSize="15sp" />
 
-        <RelativeLayout
+        <EditText
+            android:id="@+id/etName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="Frank Sinatra"
+            android:inputType="textPersonName"
+            android:textSize="24sp"
+            android:visibility="gone" />
 
-            <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="frank@gmail.com"
+            android:inputType="textPersonName"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="Password"
+            android:inputType="text"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="225dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="false"
-                android:layout_gravity="right"
-                android:layout_marginEnd="0dp"
-                android:backgroundTint="@color/blue"
-                android:onClick="clicked"
-                android:text="Login"
-                android:textColor="#FFFFFF" />
-        </RelativeLayout>
+                android:text="Show Password"
+                android:textSize="15sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="false"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="0dp"
+                    android:backgroundTint="@color/blue"
+                    android:onClick="clicked"
+                    android:text="Login"
+                    android:textColor="#FFFFFF" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="Don't have an account? Sign up here"
+            android:textAllCaps="false"
+            android:textColor="@color/blue" />
+
+        <TextView
+            android:id="@+id/tvErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/btnFacebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvSignUp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:text="Don't have an account? Sign up here"
-        android:textAllCaps="false"
-        android:textColor="@color/blue" />
 
-    <TextView
-        android:id="@+id/tvErrorMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/btnFacebook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
-
-</LinearLayout>
+</RelativeLayout>

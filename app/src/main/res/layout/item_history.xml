@@ -6,18 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerInParent="false"
-    android:layout_centerHorizontal="false"
+    android:layout_centerHorizontal="true"
     android:layout_centerVertical="false"
     android:layout_gravity="center_horizontal"
-    android:padding="10dp"
+    android:padding="5dp"
     tools:layout_editor_absoluteX="177dp"
     tools:layout_editor_absoluteY="356dp">
 
 
     <TextView
         android:id="@+id/tvDescription"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:gravity="left"
         android:text="Liked xyz" />
 </FrameLayout>

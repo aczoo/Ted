@@ -46,6 +46,8 @@ import com.google.firebase.database.Query;
 
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -70,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
                 .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
-        tvName.setText(user.getDisplayName()+"!");
+        tvName.setText("Hello "+user.getDisplayName()+"!");
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,6 +86,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()){
+                    FrameLayout session = getHistoryLayout();
+                    llActivity.addView(session);
+                    TextView tv = session.findViewById(R.id.tvDescription);
+                    tv.setText("Nothing so far!");
                     return;
                 }
                 for (DataSnapshot message:snapshot.getChildren()){
@@ -91,7 +97,11 @@ public class ProfileActivity extends AppCompatActivity {
                         llActivity.addView(session,1);
                         TextView tv = session.findViewById(R.id.tvDescription);
                         if(!message.hasChild("bot")){
-                            tv.setText("Liked post "+ message.getKey().replaceAll("@", "/"));
+                            String title = (String) message.child("title").getValue();
+                            if (title.length()>25){
+                                title = title.substring(0,title.indexOf(" ",20 ))+"...";
+                            }
+                            tv.setText("Liked "+ title + " at " +message.child("sessionStart").getValue());
                         }
                         else{
                             tv.setText("Chat session started with Ted at " +message.child("sessionStart").getValue());
