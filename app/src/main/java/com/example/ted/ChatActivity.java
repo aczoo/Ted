@@ -148,7 +148,7 @@ public class ChatActivity extends AppCompatActivity {
         });
         startChat();
         List<String> knowledgebases = new ArrayList<>();
-        knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA");
+       knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA");
         knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg");
         knowledgebases.add("projects/" + session.getProject() + "/knowledgeBases/MTQ3NDg4MjY5ODQ3NTQ3MDg0OA");
 
@@ -229,6 +229,7 @@ public class ChatActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
     private void welcomeMessage() {
         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("Hi").setLanguageCode("en-US")).build();
@@ -240,6 +241,7 @@ public class ChatActivity extends AppCompatActivity {
         if (msg.trim().isEmpty()) {
             Toast.makeText(ChatActivity.this, "Messages can't be empty!", Toast.LENGTH_LONG).show();
         } else {
+            Log.d(TAG, "sent message "+ msg);
             messageToDB(msg, USER);
             showTextView(msg, USER);
             etQuery.setText("");

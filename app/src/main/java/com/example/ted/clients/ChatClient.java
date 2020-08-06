@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.ted.ChatActivity;
-import com.google.api.client.json.Json;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2beta1.QueryInput;
@@ -14,12 +13,19 @@ import com.google.cloud.dialogflow.v2beta1.QueryParameters;
 import com.google.cloud.dialogflow.v2beta1.SessionName;
 import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers.Answer;
+import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
+import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.EncodingType;
+import com.google.cloud.language.v1.Entity;
+import com.google.cloud.language.v1.EntityMention;
+import com.google.cloud.language.v1.LanguageServiceClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -29,6 +35,7 @@ import okhttp3.Response;
 public class ChatClient extends AsyncTask<Void, Void, String> {
 
     Activity activity;
+    private String TAG = "ChatClient";
     private SessionName session;
     private SessionsClient sessionsClient;
     private QueryInput queryInput;
@@ -55,13 +62,12 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
                             .build();
             DetectIntentResponse response = sessionsClient.detectIntent(detectIntentRequest);
             QueryResult queryResult = response.getQueryResult();
-            if (queryResult.hasKnowledgeAnswers()) {
+           if (queryResult.hasKnowledgeAnswers()) {
                 Answer knowledgeAnswer = queryResult.getKnowledgeAnswers().getAnswersList().get(0);
                 if (queryResult.getIntentDetectionConfidence() < knowledgeAnswer.getMatchConfidence()) {
-                    if (knowledgeAnswer.getMatchConfidence()>.5 ){
+                    if (knowledgeAnswer.getMatchConfidence()>=.75 ){
                         return knowledgeAnswer.getAnswer();
                     }
-                    return duckResponse();
                 }
             }
             return queryResult.getFulfillmentText();
@@ -77,6 +83,7 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
     }
 
     private String duckResponse(){
+        extractEntity();
         OkHttpClient duck = new OkHttpClient();
         msg= msg.replace(" ","%20" );
         String url = "https://api.duckduckgo.com/?q="+msg  +"&format=json&pretty=1";
@@ -91,6 +98,34 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
             }
             return body.get("Abstract").toString();
         } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private String extractEntity(){
+        try (LanguageServiceClient language = LanguageServiceClient.create()) {
+            Document doc = Document.newBuilder().setContent(msg).setType(Document.Type.PLAIN_TEXT).build();
+            AnalyzeEntitiesRequest request =
+                    AnalyzeEntitiesRequest.newBuilder()
+                            .setDocument(doc)
+                            .setEncodingType(EncodingType.UTF16)
+                            .build();
+            AnalyzeEntitiesResponse response = language.analyzeEntities(request);
+
+            for (Entity entity : response.getEntitiesList()) {
+                System.out.printf("Entity: %s", entity.getName());
+                System.out.printf("Salience: %.3f\n", entity.getSalience());
+                System.out.println("Metadata: ");
+                for (Map.Entry<String, String> entry : entity.getMetadataMap().entrySet()) {
+                    System.out.printf("%s : %s", entry.getKey(), entry.getValue());
+                }
+                for (EntityMention mention : entity.getMentionsList()) {
+                    System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
+                    System.out.printf("Content: %s\n", mention.getText().getContent());
+                    System.out.printf("Type: %s\n\n", mention.getType());
+                }
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;

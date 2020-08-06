@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObject = json.jsonObject;
                 try {
                     JSONArray response = jsonObject.getJSONObject("response").getJSONArray("results");
-                    articles.add(null);
                     articles.addAll(Article.fromJsonArray(response));
                     aa.notifyDataSetChanged();
                 } catch (JSONException e) {
