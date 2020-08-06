@@ -62,13 +62,14 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
                             .build();
             DetectIntentResponse response = sessionsClient.detectIntent(detectIntentRequest);
             QueryResult queryResult = response.getQueryResult();
-           if (queryResult.hasKnowledgeAnswers()) {
+            if (queryResult.hasKnowledgeAnswers()) {
                 Answer knowledgeAnswer = queryResult.getKnowledgeAnswers().getAnswersList().get(0);
-                if (queryResult.getIntentDetectionConfidence() < knowledgeAnswer.getMatchConfidence()) {
-                    if (knowledgeAnswer.getMatchConfidence()>=.75 ){
-                        return knowledgeAnswer.getAnswer();
-                    }
+                if (queryResult.getIntentDetectionConfidence() < knowledgeAnswer.getMatchConfidence() && knowledgeAnswer.getMatchConfidence() >= .90) {
+                    return knowledgeAnswer.getAnswer();
                 }
+            }
+            if (queryResult.getIntentDetectionConfidence()<.1){
+                return duckResponse();
             }
             return queryResult.getFulfillmentText();
         } catch (Exception e) {
@@ -82,15 +83,15 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
         ((ChatActivity) activity).callback(response);
     }
 
-    private String duckResponse(){
+    private String duckResponse() {
         OkHttpClient duck = new OkHttpClient();
-        msg= extractEntity().replace(" ","%20" );
-        String url = "https://api.duckduckgo.com/?q="+msg  +"&format=json&pretty=1";
+        msg = extractEntity().replace(" ", "%20");
+        String url = "https://api.duckduckgo.com/?q=" + msg + "&format=json&pretty=1";
         Request request = new Request.Builder().url(url).build();
         try {
             Response response = duck.newCall(request).execute();
             JSONObject body = new JSONObject(response.body().string());
-            if (body.get("Abstract").toString().length()==0){
+            if (body.get("Abstract").toString().length() == 0) {
                 Log.d("duck", body.getJSONArray("RelatedTopics").getJSONObject(0).toString());
                 return body.getJSONArray("RelatedTopics").getJSONObject(0).get("Text").toString();
 
@@ -101,7 +102,8 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
         }
         return null;
     }
-    private String extractEntity(){
+
+    private String extractEntity() {
         try (LanguageServiceClient language = LanguageServiceClient.create()) {
             Document doc = Document.newBuilder().setContent(msg).setType(Document.Type.PLAIN_TEXT).build();
             AnalyzeEntitiesRequest request =
@@ -112,18 +114,14 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
             AnalyzeEntitiesResponse response = language.analyzeEntities(request);
 
             for (Entity entity : response.getEntitiesList()) {
-                System.out.printf("Entity: %s", entity.getName());
-                System.out.printf("Salience: %.3f\n", entity.getSalience());
+                Log.d(TAG, "Entity: " + entity.getName());
+                Log.d(TAG, "Salience: " + entity.getSalience());
                 System.out.println("Metadata: ");
                 for (Map.Entry<String, String> entry : entity.getMetadataMap().entrySet()) {
-                    System.out.printf("%s : %s", entry.getKey(), entry.getValue());
-                }
-                for (EntityMention mention : entity.getMentionsList()) {
-                    System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
-                    System.out.printf("Content: %s\n", mention.getText().getContent());
-                    System.out.printf("Type: %s\n\n", mention.getType());
+                    Log.d(TAG, entry.getKey() + " " + entry.getValue());
                 }
             }
+            return String.valueOf(response.getEntitiesList().get(0));
         } catch (IOException e) {
             e.printStackTrace();
         }

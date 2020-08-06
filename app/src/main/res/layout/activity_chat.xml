@@ -17,21 +17,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/inputLayout"
-        android:layout_below="@id/space">
+        android:layout_below="@id/space"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        android:isScrollContainer="true">
 
         <LinearLayout
             android:id="@+id/chatLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
 
-
+        </LinearLayout>
     </ScrollView>
 
     <RelativeLayout
         android:id="@+id/inputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
         android:paddingStart="8dp"
@@ -55,7 +61,7 @@
             android:layout_toStartOf="@+id/sendBtn"
             android:backgroundTint="@color/colorPrimaryDark"
             android:imeOptions="actionSend"
-            android:inputType="text"
+            android:inputType="textMultiLine|text"
             android:paddingTop="4dp"
             android:shadowColor="@color/colorPrimaryDark"
             android:textColor="@color/colorAccent"
