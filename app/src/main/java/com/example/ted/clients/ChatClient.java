@@ -83,9 +83,8 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
     }
 
     private String duckResponse(){
-        extractEntity();
         OkHttpClient duck = new OkHttpClient();
-        msg= msg.replace(" ","%20" );
+        msg= extractEntity().replace(" ","%20" );
         String url = "https://api.duckduckgo.com/?q="+msg  +"&format=json&pretty=1";
         Request request = new Request.Builder().url(url).build();
         try {
