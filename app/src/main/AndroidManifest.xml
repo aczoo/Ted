@@ -17,6 +17,7 @@
         <activity android:name=".ProfileActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".ChatActivity"
+            android:theme="@style/AppTheme.Transparent"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ArticleDetails"
             android:theme="@style/AppTheme.NoActionBar"/>

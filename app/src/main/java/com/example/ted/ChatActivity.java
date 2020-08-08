@@ -91,7 +91,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         overridePendingTransition(R.anim.do_not_move, R.anim.do_not_move);
 
         chatLayout = findViewById(R.id.parentChat);

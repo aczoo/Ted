@@ -103,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 for (final DataSnapshot message : snapshot.getChildren()) {
                     RelativeLayout session = getHistoryLayout();
-                    llActivity.addView(session);
+                    llActivity.addView(session,0);
                     CardView cvHistory = session.findViewById(R.id.cvHistory);
                     final ImageView ivPicture = session.findViewById(R.id.ivPicture);
                     TextView tvDescription = session.findViewById(R.id.tvDescription);
@@ -146,7 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
                         });
                     } else {
                         Glide.with(ProfileActivity.this).load(getResources().getIdentifier("ted", "drawable", getPackageName())).into(ivPicture);
-                        tvDescription.setText("Chat session started with Ted at " + message.child("sessionStart").getValue());
+                        tvDescription.setText("Talked to Ted at " + message.child("sessionStart").getValue());
                     }
                 }
             }
