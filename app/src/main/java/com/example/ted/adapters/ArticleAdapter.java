@@ -4,17 +4,12 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
@@ -24,10 +19,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.ted.ArticleDetails;
 import com.example.ted.ChatActivity;
-import com.example.ted.MainActivity;
 import com.example.ted.R;
 import com.example.ted.models.Article;
-import com.facebook.stetho.inspector.protocol.module.Database;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +39,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -62,10 +54,15 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         this.context = context;
         this.articles = articles;
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) return 1;
+        else return 2;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //inserts welcome card at the top of the recyclerview
         if (viewType == 1)
             return new welcomeViewHolder(LayoutInflater.from(context).inflate(R.layout.item_welcome, parent, false));
         else
@@ -83,12 +80,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return articles.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0) return 1;
-        else return 2;
-    }
-
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
@@ -97,27 +88,28 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public void bind(Article article) {
         }
     }
-
+    //Welcome View Holder
     public class welcomeViewHolder extends ViewHolder implements View.OnClickListener {
         public welcomeViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
         }
-
+        //Opens chat dialogue upon click
         @Override
         public void onClick(View view) {
             Intent i = new Intent(context, ChatActivity.class);
+            //specifies starting coordinates for circular reveal animation, middle of the floating action bubble
             i.putExtra("x", 948);
             i.putExtra("y", 1830);
             context.startActivity(i);
         }
     }
-
+    //Article View Holder
     public class articleViewHolder extends ViewHolder implements View.OnClickListener {
         TextView tvTitle, tvAuthor, tvDate;
         ImageView ivThumbnail;
         LottieAnimationView heart, heartbreak;
-
+        //Locates necessary components
         public articleViewHolder(@NonNull final View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
@@ -128,7 +120,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             heartbreak = itemView.findViewById(R.id.heartbreak);
             itemView.setOnClickListener(this);
         }
-
+        //Fills said components with the article passed in
         @Override
         public void bind(@NotNull final Article article) {
             tvTitle.setText(article.getTitle());
@@ -141,11 +133,28 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             String url = article.getImageUrl();
             Glide.with(context).load(url).transform(new RoundedCornersTransformation(15, 15))
                     .thumbnail(Glide.with(itemView.getContext()).load(R.drawable.noresponse)).into(ivThumbnail);
+            //Displays correct "heart" status upon opening the app
+            userDB.child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.hasChild(article.getId())){
+                        heart.setVisibility(View.GONE);
+                        heartbreak.setVisibility(View.VISIBLE);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.w(TAG, "onCancelled: ", error.toException());
+                }
+            });
+
+            //Heart animation
             heart.addAnimatorListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
                 }
-
+                /*After the animation reaches it's end state, we want to reset its progress, hide it, and reveal
+                 the heartbreak animation.*/
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     heart.setVisibility(View.GONE);
@@ -161,12 +170,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 public void onAnimationRepeat(Animator animator) {
                 }
             });
+            //Heartbreak animation
             heartbreak.addAnimatorListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
 
                 }
-
+                /*After the animation reaches it's end state, we want to reset its progress, hide it, and reveal
+                 the heart animation. */
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     heartbreak.setVisibility(View.GONE);
@@ -183,27 +194,17 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
                 }
             });
-            userDB.child("likes").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.hasChild(article.getId())){
-                        heart.setVisibility(View.GONE);
-                        heartbreak.setVisibility(View.VISIBLE);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.w(TAG, "onCancelled: ", error.toException());
-                }
-            });
+            //Upon clicking like
             heart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     heart.playAnimation();
+                    //Adds the article to the user's likes
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(article.getId(), ServerValue.TIMESTAMP);
                     userDB.child("likes").updateChildren(map);
                     map = new HashMap<>();
+                    //Adds a different version of the article to the user's activity, with timestamps and without unnecessary information
                     HashMap<String, Object> map2 = new HashMap<>();
                     map2.put("timestamp", ServerValue.TIMESTAMP);
                     map2.put("timeLiked",sdf.format(new Date()) );
@@ -213,17 +214,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     userDB.child("activity").updateChildren(map);
                 }
             });
+            //Upon clicking unlike
             heartbreak.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     heartbreak.playAnimation();
+                    //remove the article from the user's likes and activity
                     userDB.child("likes").child(article.getId()).removeValue();
                     userDB.child("activity").child(article.getId().replace("/","@")).removeValue();
 
                 }
             });
         }
-
+        //Upon clicking the article, open the details activity
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
@@ -231,6 +234,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 Article article = articles.get(position);
                 Intent intent = new Intent(context, ArticleDetails.class);
                 intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(article));
+                //Shared Element Activity Transition, uses the shared element between both activities to emphasize continuity
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity)context, ivThumbnail, "thumbnail");
                  context.startActivity(intent, options.toBundle());

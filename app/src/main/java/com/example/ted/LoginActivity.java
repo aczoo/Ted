@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     public LoginButton btnFacebook;
     public CheckBox checkBox;
     public TextView tvSignUp, tvError;
-    public static Dictionary em = new Hashtable(){{
+    public static Dictionary errorMessages = new Hashtable(){{
         put("ERROR_INVALID_CUSTOM_TOKEN", "The custom token format is incorrect. Please check the documentation.");
         put("ERROR_CUSTOM_TOKEN_MISMATCH", "The custom token corresponds to a different audience.");
         put("ERROR_INVALID_CREDENTIAL", "The supplied auth credential is malformed or has expired.");
@@ -67,7 +67,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        if (currentUser!=null){
+        updateUI(currentUser);}
     }
 
     @Override
@@ -77,8 +78,18 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
 
+        //Locate necessary components
         btnLogin = findViewById(R.id.btnLogin);
         btnFacebook = findViewById(R.id.btnFacebook);
+        etName = findViewById(R.id.etName);
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
+        etPassword.setTransformationMethod(new PasswordTransformationMethod());
+        checkBox = findViewById(R.id.checkBox);
+        tvSignUp = findViewById(R.id.tvSignUp);
+        tvError = findViewById(R.id.tvErrorMessage);
+
+        //Continue with Facebook button
         btnFacebook.setReadPermissions("email", "public_profile");
         btnFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -86,24 +97,17 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
-
             @Override
             public void onCancel() {
                 Log.d(TAG, "facebook:onCancel");
-                updateUI(null);
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
-                updateUI(null);
             }
         });
-        etName = findViewById(R.id.etName);
-        etUsername = findViewById(R.id.etUsername);
-        etPassword = findViewById(R.id.etPassword);
-        etPassword.setTransformationMethod(new PasswordTransformationMethod());
-        checkBox = findViewById(R.id.checkBox);
+        //Hide password checkbox
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -115,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        tvSignUp = findViewById(R.id.tvSignUp);
+        //Moves over to the sign up page
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,18 +128,11 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        tvError = findViewById(R.id.tvErrorMessage);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-
+    //Upon clicking login, attempts to sign in a user with the given email address and password
     public void clicked(View view) {
         Log.i(TAG, "Clicked login");
+
         mAuth.signInWithEmailAndPassword(etUsername.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -150,12 +147,17 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
                             showError(errorCode);
-                            updateUI(null);
                         }
                     }
                 });
     }
-
+    /*After authenticating with fb, we can refer back to the registered callback in line 93.
+    If successful, prompts the handleFacebookAccessToken method.*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -180,24 +182,21 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
                         }
                     }
                 });
     }
 
-
+    //After login/signup, move over to the main activity
     protected void updateUI(FirebaseUser user) {
-        if (user != null) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
+            overridePendingTransition(R.anim.do_not_move, R.anim.do_not_move);
             finish();
-        }
     }
-
+    //Uses the established dictionary of error codes to display a message to users
     protected void showError(String errorCode) {
-
-        String ec = (String) em.get(errorCode);
+        String ec = (String) errorMessages.get(errorCode);
         if (ec != null)
             tvError.setText(ec);
     }

@@ -1,17 +1,8 @@
 package com.example.ted.models;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Movie;
-import android.net.Uri;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.format.DateUtils;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
+import android.text.format.DateUtils;
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,9 +12,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -115,6 +103,7 @@ public class Article {
         links.add(link);
         index.add(new int[]{i, i2});
     }
+
     public void getRelativeTimeAgo(String rawJsonDate) {
         rawJsonDate= rawJsonDate.replace("T"," ");
         rawJsonDate= rawJsonDate.replace("Z","");

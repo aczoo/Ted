@@ -1,7 +1,5 @@
 package com.example.ted;
 
-import android.animation.Animator;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,39 +7,31 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.adapters.ArticleAdapter;
-import com.example.ted.clients.ChatClient;
 import com.example.ted.models.Article;
 import com.facebook.shimmer.ShimmerFrameLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +45,7 @@ import okhttp3.Headers;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String base_url = "https://content.guardianapis.com/search?q=";
-    private static final String court_url = "https://www.courtlistener.com/api/rest/v3/opinions/?court__id=cafc&court__id=scotus/?order_by=-date_created";
+    //private static final String court_url = "https://www.courtlistener.com/api/rest/v3/opinions/?court__id=cafc&court__id=scotus/?order_by=-date_created";
     private static final String API_KEY = "9dc64de8-158b-4a95-8b5d-c0f520e2abd0";
     private FirebaseUser user;
     private RecyclerView rvArticles;
@@ -110,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 shimmerFrameLayout.setVisibility(View.GONE);
 
             }
-           // https://www.courtlistener.com/api/rest/v3/opinions/?court__id=cafc&court__id=scotus/?order_by=-date_created
-           // @Override
+            @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d(TAG, "onFailure");
             }
