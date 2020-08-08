@@ -6,118 +6,127 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorPrimary" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:id="@+id/rlPfp"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentBottom="false"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/circle">
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="match_parent"
-                android:layout_height="175dp"
-                android:background="@color/colorPrimary" />
+            <ImageView
+                android:id="@+id/ivPfp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerInParent="true"
+                tools:srcCompat="@tools:sample/avatars" />
 
-            <RelativeLayout
-                android:id="@+id/rlPfp"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentTop="true"
+            <ImageView
+                android:id="@+id/ivEdit"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignRight="@id/ivPfp"
+                android:layout_alignBottom="@id/ivPfp"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentRight="false"
                 android:layout_alignParentBottom="false"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="40dp"
-                android:background="@drawable/circle">
+                android:clickable="true"
+                app:srcCompat="@drawable/add" />
+        </RelativeLayout>
 
-                <ImageView
-                    android:id="@+id/ivPfp"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_centerInParent="true"
-                    tools:srcCompat="@tools:sample/avatars" />
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_toEndOf="@id/rlPfp"
+            android:text="Frank"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp" />
 
-                <ImageView
-                    android:id="@+id/ivEdit"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignRight="@id/ivPfp"
-                    android:layout_alignBottom="@id/ivPfp"
-                    android:layout_alignParentEnd="false"
-                    android:layout_alignParentRight="false"
-                    android:layout_alignParentBottom="false"
-                    android:clickable="true"
-                    app:srcCompat="@drawable/add" />
-            </RelativeLayout>
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvName"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/rlPfp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/accent"
+            android:minHeight="0dp"
+            android:onClick="logout"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Log out"
+            android:textColor="#FFFFFF" />
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="60dp"
-                android:layout_toEndOf="@id/rlPfp"
-                android:text="Frank"
-                android:textColor="@color/colorAccent"
-                android:textSize="24sp" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@id/view2"
+            android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="false"
+            android:gravity="center">
 
-            <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvName"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="30dp"
-                android:layout_toEndOf="@+id/rlPfp"
-                android:backgroundTint="@color/accent"
-                android:onClick="logout"
-                android:text="Log out"
-                android:textColor="#FFFFFF" />
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnLogout"
-                android:layout_alignParentBottom="false"
-                android:layout_centerHorizontal="false"
-                android:gravity="center"
-                >
             <LinearLayout
-                android:id="@+id/llActivity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="20dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="#FFFFFF"
+                    android:elevation="5dp"
                     android:gravity="center"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:text="Activity"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/llActivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:baselineAligned="true"
+                        android:clickable="false"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+                </ScrollView>
             </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-    </ScrollView>
 
-
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
