@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
     public void goProfile(MenuItem menuItem){
         Intent i = new Intent(this, ProfileActivity.class);
         startActivity(i);
+
     }
     public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
         @Override

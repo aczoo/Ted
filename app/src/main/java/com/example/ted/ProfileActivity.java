@@ -1,42 +1,33 @@
 package com.example.ted;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.ted.models.Article;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,21 +41,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.Query;
 
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
@@ -76,11 +60,19 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvName;
     private LinearLayout llActivity;
     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        getSupportActionBar().setTitle("Profile");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         ivPfp = findViewById(R.id.ivPfp);
         ivEdit = findViewById(R.id.ivEdit);
@@ -113,11 +105,11 @@ public class ProfileActivity extends AppCompatActivity {
                     RelativeLayout session = getHistoryLayout();
                     llActivity.addView(session);
                     CardView cvHistory = session.findViewById(R.id.cvHistory);
-                    ImageView ivIcon = session.findViewById(R.id.ivIcon);
+                    final ImageView ivPicture = session.findViewById(R.id.ivPicture);
                     TextView tvDescription = session.findViewById(R.id.tvDescription);
                     if (!message.hasChild("bot")) {
                         if (message.hasChild("imageUrl")) {
-                            Glide.with(ProfileActivity.this).load(message.child("imageUrl").getValue().toString()).transform(new RoundedCornersTransformation(2, 2)).into(ivIcon);
+                            Glide.with(ProfileActivity.this).load(message.child("imageUrl").getValue().toString()).transform(new RoundedCornersTransformation(2, 2)).into(ivPicture);
                         }
                         String title = (String) message.child("title").getValue();
                         if (title.length() > 25) {
@@ -137,7 +129,9 @@ public class ProfileActivity extends AppCompatActivity {
                                             Article article = new Article(jsonObject.getJSONObject("response").getJSONObject("content"));
                                             Intent intent = new Intent(ProfileActivity.this, ArticleDetails.class);
                                             intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(article));
-                                            startActivity(intent);
+                                            ActivityOptionsCompat options = ActivityOptionsCompat.
+                                                    makeSceneTransitionAnimation(ProfileActivity.this, ivPicture, "thumbnail");
+                                            startActivity(intent, options.toBundle());
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -151,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Glide.with(ProfileActivity.this).load(getResources().getIdentifier("ted", "drawable", getPackageName())).into(ivIcon);
+                        Glide.with(ProfileActivity.this).load(getResources().getIdentifier("ted", "drawable", getPackageName())).into(ivPicture);
                         tvDescription.setText("Chat session started with Ted at " + message.child("sessionStart").getValue());
                     }
                 }

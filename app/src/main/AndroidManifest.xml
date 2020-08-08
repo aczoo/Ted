@@ -15,9 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".ChatActivity"
-            android:theme="@style/AppTheme.Transparent"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ArticleDetails"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -31,7 +30,6 @@
         </activity>
         <activity android:name=".MainActivity"
             android:label=""/>
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

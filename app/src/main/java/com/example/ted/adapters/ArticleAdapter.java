@@ -1,6 +1,7 @@
 package com.example.ted.adapters;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.ContactsContract;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -229,7 +231,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 Article article = articles.get(position);
                 Intent intent = new Intent(context, ArticleDetails.class);
                 intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(article));
-                context.startActivity(intent);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity)context, ivThumbnail, "thumbnail");
+                 context.startActivity(intent, options.toBundle());
             }
         }
     }
