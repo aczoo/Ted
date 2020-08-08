@@ -6,7 +6,6 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -52,36 +51,41 @@ import okhttp3.Headers;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
-    private static final int PICK_IMAGE_ID = 123;
     private static final String base_url = "https://content.guardianapis.com/";
     private static final String API_KEY = "9dc64de8-158b-4a95-8b5d-c0f520e2abd0";
-    private FirebaseUser user;
+    private static final int PICK_IMAGE_ID = 123;
     private ImageView ivPfp, ivEdit;
     private TextView tvName;
     private LinearLayout llActivity;
-    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+    private FirebaseUser user;
+
+    //Back arrow in action bar, directs back to main page
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        //Sets up the title and back button for the action bar
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        //Locate necessary components
         ivPfp = findViewById(R.id.ivPfp);
-        ivEdit = findViewById(R.id.ivEdit);
         tvName = findViewById(R.id.tvName);
+        ivEdit = findViewById(R.id.ivEdit);
         llActivity = findViewById(R.id.llActivity);
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        //Fills in user's name and pfp
         Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
                 .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
         tvName.setText("Hello " + user.getDisplayName() + "!");
+        //If the add image is clicked, direct users to the image picker activity
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,11 +93,14 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
             }
         });
-        final DatabaseReference messagesDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("activity");
-        Query messageQuery = messagesDB.orderByChild("timestamp");
+
+        //Populate the activity section with the user's liked articles and chat sessions, sorted by the server time when added to firebase
+        final DatabaseReference activityDB = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("activity");
+        Query messageQuery = activityDB.orderByChild("timestamp");
         messageQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //If the user hasn't done anything yet, add a quick note of it
                 if (!snapshot.exists()) {
                     RelativeLayout session = getHistoryLayout();
                     llActivity.addView(session);
@@ -101,21 +108,29 @@ public class ProfileActivity extends AppCompatActivity {
                     tv.setText("Nothing so far!");
                     return;
                 }
+                //If the user has some activity on the app, then for each action, display a quick blurb about it.
                 for (final DataSnapshot message : snapshot.getChildren()) {
+                    //Inflate the history item layout and locate necessary components
                     RelativeLayout session = getHistoryLayout();
-                    llActivity.addView(session,0);
                     CardView cvHistory = session.findViewById(R.id.cvHistory);
-                    final ImageView ivPicture = session.findViewById(R.id.ivPicture);
                     TextView tvDescription = session.findViewById(R.id.tvDescription);
+                    final ImageView ivPicture = session.findViewById(R.id.ivPicture);
+                    //If the given activity item is a liked article and not a chat conversation, then add the relevant description,
+                    // article thumbnail, and event listener for when clicked.
                     if (!message.hasChild("bot")) {
-                        if (message.hasChild("imageUrl")) {
-                            Glide.with(ProfileActivity.this).load(message.child("imageUrl").getValue().toString()).transform(new RoundedCornersTransformation(2, 2)).into(ivPicture);
-                        }
+                        //Update the description with the article title and time liked
                         String title = (String) message.child("title").getValue();
+                        //Shorten the title if necessary
                         if (title.length() > 25) {
                             title = title.substring(0, title.indexOf(" ", 17)) + "...";
                         }
                         tvDescription.setText("Liked " + title + " at " + message.child("timeLiked").getValue());
+                        //Update the filler image with the article thumbnail
+                        if (message.hasChild("imageUrl")) {
+                            Glide.with(ProfileActivity.this).load(message.child("imageUrl").getValue().toString()).transform(new RoundedCornersTransformation(2, 2)).into(ivPicture);
+                        }
+                        //If this item is clicked, then request article information from the guardian api with the supplied id and
+                        //then open the article details page.
                         cvHistory.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -129,6 +144,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             Article article = new Article(jsonObject.getJSONObject("response").getJSONObject("content"));
                                             Intent intent = new Intent(ProfileActivity.this, ArticleDetails.class);
                                             intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(article));
+                                            //Shared Element Activity Transition, uses a shared element between both activities to emphasize continuity
                                             ActivityOptionsCompat options = ActivityOptionsCompat.
                                                     makeSceneTransitionAnimation(ProfileActivity.this, ivPicture, "thumbnail");
                                             startActivity(intent, options.toBundle());
@@ -144,10 +160,13 @@ public class ProfileActivity extends AppCompatActivity {
                                 });
                             }
                         });
-                    } else {
+                    }
+                    //if the given activity item is a chat conversation, then add the relevant description and image.
+                    else {
                         Glide.with(ProfileActivity.this).load(getResources().getIdentifier("ted", "drawable", getPackageName())).into(ivPicture);
                         tvDescription.setText("Talked to Ted at " + message.child("sessionStart").getValue());
                     }
+                    llActivity.addView(session,0);
                 }
             }
 
@@ -156,14 +175,19 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
+    //After opening the image selector activity and returning to the profile page
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            //if users intended on picking an image...
             case PICK_IMAGE_ID:
+                //and if an image was successfully selected,
                 if (resultCode == RESULT_OK) {
+                    //then update the user's profile on firebase
                     Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
                     UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(getImageUri(this, bitmap)).build();
+                    /*Once complete, the profile picture displayed at the top will be updated and a notification will be sent out
+                     via the LocalBroadcastManager to the main page*/
                     user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -171,6 +195,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Glide.with(ProfileActivity.this).load(user.getPhotoUrl()).circleCrop()
                                     .thumbnail(Glide.with(ProfileActivity.this).load(R.drawable.com_facebook_profile_picture_blank_portrait).circleCrop()).into(ivPfp);
                             Intent i = new Intent("newpfp");
+                            //Tells the main page to update the displayed user pfp
                             LocalBroadcastManager.getInstance(ProfileActivity.this).sendBroadcast(i);
                         }
                     });
@@ -181,22 +206,21 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
         }
     }
-
+    //If the user clicks logout
     public void logout(View view) {
-        //sign out of user account
+        //Signs out of user account
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
-        //close out the main activity
+        //Broadcasts a notification that the user has signed out, main activity will receive it and close itself
         Intent i = new Intent("logout");
         LocalBroadcastManager.getInstance(view.getContext()).sendBroadcast(i);
-        //jump back to the login activity
+        //Direct users back to the login activity and closes the current page
         i = new Intent(this, LoginActivity.class);
         startActivity(i);
-        //end the profile page
         finish();
     }
 
-
+    //Converts bitmap of selected profile picture to a Uri
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -204,6 +228,7 @@ public class ProfileActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    //Not in use, but gets a higher definition version of the facebook authenticated user's profile picture
     public void customProfile(FirebaseUser user, int height) {
         for (UserInfo profile : user.getProviderData()) {
             if (FacebookAuthProvider.PROVIDER_ID.equals(profile.getProviderId())) {
@@ -212,24 +237,28 @@ public class ProfileActivity extends AppCompatActivity {
                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(photoUrl)).build();
                 user.updateProfile(profileChangeRequest);
             }
-
         }
     }
 
+    //Inflates the history layout, which will show the user's activity
     public RelativeLayout getHistoryLayout() {
         LayoutInflater inflater = LayoutInflater.from(ProfileActivity.this);
         return (RelativeLayout) inflater.inflate(R.layout.item_history, null);
     }
 
+    // Builds off of the basic guardian single item call
     public String getURL(String id) {
+        //Specifies which article to pull
         Uri baseUri = Uri.parse(base_url + id);
-        //add query parameters to the base url
+        //Add query parameters to the base url
         Uri.Builder uriBuilder = baseUri.buildUpon();
+        //Asks for date of publish not last update
         uriBuilder.appendQueryParameter("use-date", "published");
+        //Asks for the author and publication
         uriBuilder.appendQueryParameter("show-tags", "contributor,publication");
+        //Asks for the thumbnail image and the body of text
         uriBuilder.appendQueryParameter("show-fields", "thumbnail,body");
         uriBuilder.appendQueryParameter("api-key", API_KEY);
-        Log.d(TAG, uriBuilder.toString().replace("&=", ""));
         return uriBuilder.toString().replace("&=", "");
     }
 

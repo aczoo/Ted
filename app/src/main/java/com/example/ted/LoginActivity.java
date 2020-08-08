@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp = findViewById(R.id.tvSignUp);
         tvError = findViewById(R.id.tvErrorMessage);
 
-        //Continue with Facebook button
+        //"Continue with Facebook button"
         btnFacebook.setReadPermissions("email", "public_profile");
         btnFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override

@@ -99,6 +99,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public void onClick(View view) {
             Intent i = new Intent(context, ChatActivity.class);
             //specifies starting coordinates for circular reveal animation, middle of the floating action bubble
+            //hardcoded values because the fab isn't a part of the article adapter
             i.putExtra("x", 948);
             i.putExtra("y", 1830);
             context.startActivity(i);
@@ -234,7 +235,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 Article article = articles.get(position);
                 Intent intent = new Intent(context, ArticleDetails.class);
                 intent.putExtra(Article.class.getSimpleName(), Parcels.wrap(article));
-                //Shared Element Activity Transition, uses the shared element between both activities to emphasize continuity
+                //Shared Element Activity Transition, uses a shared element between both activities to emphasize continuity
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity)context, ivThumbnail, "thumbnail");
                  context.startActivity(intent, options.toBundle());

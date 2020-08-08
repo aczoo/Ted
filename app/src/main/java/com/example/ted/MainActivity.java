@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private List<Article> articles;
 
+    //Adds profile image to tool bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -68,26 +69,38 @@ public class MainActivity extends AppCompatActivity {
         });
         return true;
     }
+    //If user clicks on their pfp, they are directed to the profile activity
+    public void goProfile(MenuItem menuItem){
+        Intent i = new Intent(this, ProfileActivity.class);
+        startActivity(i);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(updateMenu, new IntentFilter("newpfp"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
+        //Locate necessary components
         rvArticles = findViewById(R.id.rvArticles);
         fab = findViewById(R.id.fab);
         shimmerFrameLayout= findViewById(R.id.shimmerFrameLayout);
+        //Sets up LocalBroadcastManagers which watch for notifications on the events that the user updates their pfp or logs out
+        //Registering observers, updateMenu and logoutReceiver, to receive intents with the specified action names
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateMenu, new IntentFilter("newpfp"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(logoutReceiver, new IntentFilter("logout"));
+        //Set up for the recycler view
         articles = new ArrayList<>();
         final ArticleAdapter aa = new ArticleAdapter(this, articles);
         rvArticles.setAdapter(aa);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
+        //Establishes HTTP client
         AsyncHttpClient client = new AsyncHttpClient();
-        Log.d(TAG, "Guardian url: "+ getURL(base_url));
-        client.get(getURL(base_url), new JsonHttpResponseHandler() {
+        Log.d(TAG, "Guardian url: "+ getURL());
+        client.get(getURL(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.d(TAG, "onSuccess");
+                Log.d(TAG, "Success in Guardian data");
+                /*If data is received, then take the json file, add all articles into the list,
+                and update the recycler view that data has been added*/
                 JSONObject jsonObject = json.jsonObject;
                 try {
                     JSONArray response = jsonObject.getJSONObject("response").getJSONArray("results");
@@ -96,24 +109,29 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                /*Once the recycler view has been populated, we can stop displaying the placeholder main page
+                (shimmerframelayout from fb open source)*/
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.GONE);
 
             }
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.d(TAG, "onFailure");
+                Log.d(TAG, "Failure in Guardian data");
             }
         });
+        //Upon clicking the floating action bubble, users enter the chat activity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ChatActivity.class);
+                //specifies starting coordinates for circular reveal animation, middle of the floating action bubble
                 i.putExtra("x", fab.getRight()-fab.getWidth()/2);
                 i.putExtra("y",fab.getBottom()+fab.getHeight()/2);
                 startActivity(i);
             }
         });
+        // When the user is scrolling through articles, the floating action will be hidden
         rvArticles.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -127,8 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
-
-
     }
     @Override
     public void onResume() {
@@ -141,35 +157,42 @@ public class MainActivity extends AppCompatActivity {
         shimmerFrameLayout.stopShimmerAnimation();
         super.onPause();
     }
-
-    public String getURL(String base) {
-        Uri baseUri = Uri.parse(base);
-        //add query parameters to the base url
+    // Builds off of the basic guardian search call
+    public String getURL() {
+        Uri baseUri = Uri.parse(base_url);
+        //Add query parameters to the base url
         Uri.Builder uriBuilder = baseUri.buildUpon();
+        //Limits to legal news
         uriBuilder.appendQueryParameter("section", "law");
+        //Expands request to 20 articles
         uriBuilder.appendQueryParameter("page-size", "20");
+        //Orders articles by publishing date
         uriBuilder.appendQueryParameter("order-by", "newest");
+        //Asks for date of publish not last update
         uriBuilder.appendQueryParameter("use-date", "published");
+        //Asks for the author and publication
         uriBuilder.appendQueryParameter("show-tags", "contributor,publication");
+        //Asks for the thumbnail image and the body of text
         uriBuilder.appendQueryParameter("show-fields", "thumbnail,body");
         uriBuilder.appendQueryParameter("api-key", API_KEY);
         return uriBuilder.toString().replace("&=", "");
     }
-    public void goProfile(MenuItem menuItem){
-        Intent i = new Intent(this, ProfileActivity.class);
-        startActivity(i);
-
-    }
-    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finish();
-        }
-    };
+    /*Handler for broadcasted actions under the name "newpfp"
+    If the user uploads a new pfp in the profile activity, we want to invalidate the options menu such that upon
+    reentering the main activity, users can see that the update has been made*/
     public BroadcastReceiver updateMenu = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             invalidateOptionsMenu();
+        }
+    };
+    /*Handler for broadcasted actions under the name "logout"
+    /If the user logs out in the profile activity, we want to also close out this activity such that upon
+    being redirected to the login activity, users can not go back to the main page*/
+    public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
         }
     };
 }
