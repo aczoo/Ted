@@ -53,7 +53,6 @@ public class Article {
         links = new ArrayList<>();
         clean();
     }
-
     public static List<Article> fromJsonArray(JSONArray articleJson) throws JSONException {
         List<Article> l = new ArrayList<>();
         for (int i = 0; i < articleJson.length(); i++) {
@@ -71,6 +70,9 @@ public class Article {
     }
     public String getImageUrl() {
         return imageUrl;
+    }
+    public String getArticleUrl() {
+        return articleUrl;
     }
     public String getBody() {
         return body;

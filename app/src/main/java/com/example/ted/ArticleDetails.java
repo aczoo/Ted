@@ -15,19 +15,13 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ted.models.Article;
 
 import org.parceler.Parcels;
-
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
-
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ArticleDetails extends AppCompatActivity {
     Article article;
@@ -43,7 +37,6 @@ public class ArticleDetails extends AppCompatActivity {
         tvBody =findViewById(R.id.tvBody);
         tvDate= findViewById(R.id.tvDate);
         ivThumbnail = findViewById(R.id.ivPicture);
-
         article = Parcels.unwrap(getIntent().getParcelableExtra(Article.class.getSimpleName()));
         tvTitle.setText(article.getTitle());
         tvAuthor.setText(article.getAuthor());
@@ -52,6 +45,11 @@ public class ArticleDetails extends AppCompatActivity {
         String url = article.getImageUrl();
         Glide.with(ArticleDetails.this).load(url).thumbnail(Glide.with(ArticleDetails.this).load(R.drawable.noresponse)).into(ivThumbnail);
 
+    }
+    public void openArticle(View view){
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(article.getArticleUrl()));
+        startActivity(i);
     }
     public void fillBody(){
         SpannableString ss = new SpannableString(article.getBody());

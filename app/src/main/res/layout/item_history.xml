@@ -1,24 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="false"
-    android:layout_centerHorizontal="true"
-    android:layout_centerVertical="false"
-    android:layout_gravity="center_horizontal"
-    android:padding="5dp"
-    tools:layout_editor_absoluteX="177dp"
-    tools:layout_editor_absoluteY="356dp">
+    android:layout_weight="0.9"
+    android:clickable="false">
 
-
-    <TextView
-        android:id="@+id/tvDescription"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvHistory"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:gravity="left"
-        android:text="Liked xyz" />
-</FrameLayout>
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="2dp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/ivIcon"
+                android:gravity="left"
+                android:text="Liked xyz"
+                android:textColor="@color/colorAccent" />
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="7.5dp"
+                android:layout_marginBottom="7.5dp"
+                app:srcCompat="@android:drawable/ic_menu_report_image" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

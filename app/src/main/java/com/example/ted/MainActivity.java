@@ -53,14 +53,15 @@ import java.util.List;
 import okhttp3.Headers;
 
 public class MainActivity extends AppCompatActivity {
-    private List<Article> articles;
     private static final String TAG = "MainActivity";
     private static final String base_url = "https://content.guardianapis.com/search?q=";
+    private static final String court_url = "https://www.courtlistener.com/api/rest/v3/opinions/?court__id=cafc&court__id=scotus/?order_by=-date_created";
     private static final String API_KEY = "9dc64de8-158b-4a95-8b5d-c0f520e2abd0";
     private FirebaseUser user;
     private RecyclerView rvArticles;
     private ShimmerFrameLayout shimmerFrameLayout;
     private FloatingActionButton fab;
+    private List<Article> articles;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 shimmerFrameLayout.setVisibility(View.GONE);
 
             }
-
-            @Override
+           // https://www.courtlistener.com/api/rest/v3/opinions/?court__id=cafc&court__id=scotus/?order_by=-date_created
+           // @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d(TAG, "onFailure");
             }

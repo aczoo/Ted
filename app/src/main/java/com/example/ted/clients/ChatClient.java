@@ -68,7 +68,8 @@ public class ChatClient extends AsyncTask<Void, Void, String> {
                     return knowledgeAnswer.getAnswer();
                 }
             }
-            if (queryResult.getIntentDetectionConfidence()<.1){
+            Log.d(TAG, "Intent "+queryResult.getIntent().getDisplayName());
+            if (queryResult.getIntent().getDisplayName().equals("Fallback Intent")){
                 return duckResponse();
             }
             return queryResult.getFulfillmentText();

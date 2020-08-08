@@ -204,8 +204,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     map = new HashMap<>();
                     HashMap<String, Object> map2 = new HashMap<>();
                     map2.put("timestamp", ServerValue.TIMESTAMP);
-                    map2.put("sessionStart",sdf.format(new Date()) );
+                    map2.put("timeLiked",sdf.format(new Date()) );
                     map2.put("title", article.getTitle());
+                    map2.put("imageUrl", article.getImageUrl());
                     map.put(article.getId().replaceAll("/","@"), map2);
                     userDB.child("activity").updateChildren(map);
                 }

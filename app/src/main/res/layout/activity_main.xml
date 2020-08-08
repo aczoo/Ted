@@ -41,23 +41,24 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:orientation="vertical">
-            <include layout="@layout/item_welcome_placeholder" />
-            <include layout="@layout/item_article_placeholder" />
 
-            <include layout="@layout/item_article_placeholder" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:orientation="vertical">
 
-            <include layout="@layout/item_article_placeholder" />
+                <include layout="@layout/item_welcome_placeholder" />
 
-            <include layout="@layout/item_article_placeholder" />
+                <include layout="@layout/item_article_placeholder" />
 
-            <include layout="@layout/item_article_placeholder" />
+                <include layout="@layout/item_article_placeholder" />
 
-        </LinearLayout>
+                <include layout="@layout/item_article_placeholder" />
+
+                <include layout="@layout/item_article_placeholder" />
+
+            </LinearLayout>
         </ScrollView>
     </com.facebook.shimmer.ShimmerFrameLayout>
 
