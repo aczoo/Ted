@@ -22,19 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImagePicker {
-    private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;
     private static final String TAG = "ImagePicker";
     private static final String TEMP_IMAGE_NAME = "tempImage";
-
-    public static int minWidthQuality = DEFAULT_MIN_WIDTH_QUALITY;
-
+    private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;
+    //Display options to either select an image from their gallery or with the camera
     public static Intent getPickImageIntent(Context context) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+        //Adds the pick and take options to the main image intent
         Intent chooserIntent = null;
-
         List<Intent> intentList = new ArrayList<>();
-
         Intent pickIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -42,15 +39,17 @@ public class ImagePicker {
         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(context)));
         intentList = addIntentsToList(context, intentList, pickIntent);
         intentList = addIntentsToList(context, intentList, takePhotoIntent);
+        //Creates the chooser dialog
         if (intentList.size() > 0) {
             chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1), "Update Profile Picture");
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
         }
         return chooserIntent;
     }
-
+    //Adds the specified intent and returns an updated parent intent
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
         List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
+        //For each resolve info, add the appropriate intent to the intent list
         for (ResolveInfo resolveInfo : resInfo) {
             String packageName = resolveInfo.activityInfo.packageName;
             Intent targetedIntent = new Intent(intent);
@@ -60,25 +59,29 @@ public class ImagePicker {
         }
         return list;
     }
-
-
+    //Upon returning from either the pick/take image intent, get a bitmap from the uri
     public static Bitmap getImageFromResult(Context context, int resultCode,
                                             Intent imageReturnedIntent) {
         Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
         Bitmap bm = null;
+        //Creates a file with the context
         File imageFile = getTempFile(context);
+        //If a photo was successfully selected, we can start defining the bitmap
         if (resultCode == Activity.RESULT_OK) {
             Uri selectedImage;
             boolean isCamera = (imageReturnedIntent == null ||
                     imageReturnedIntent.getData() == null  ||
                     imageReturnedIntent.getData().toString().contains(imageFile.toString()));
+            //If the photo was taken by the camera, then get the uri from the context
             if (isCamera) {
                 selectedImage = Uri.fromFile(imageFile);
-            } else {
+            }
+            //If the photo was selected in the user's gallery, then get the uri from the returning intent
+            else {
                 selectedImage = imageReturnedIntent.getData();
             }
             Log.d(TAG, "selectedImage: " + selectedImage);
-
+            //Convert the uri to bitmap, then resize and rotate
             bm = getImageResized(context, selectedImage);
             int rotation = getRotation(context, selectedImage, isCamera);
             bm = rotate(bm, rotation);
@@ -86,13 +89,13 @@ public class ImagePicker {
         return bm;
     }
 
-
+    //Creates a file using the context
     private static File getTempFile(Context context) {
         File imageFile = new File(context.getExternalCacheDir(), TEMP_IMAGE_NAME);
         imageFile.getParentFile().mkdirs();
         return imageFile;
     }
-
+    //
     private static Bitmap decodeBitmap(Context context, Uri theUri, int sampleSize) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = sampleSize;
@@ -113,9 +116,7 @@ public class ImagePicker {
         return actuallyUsableBitmap;
     }
 
-    /**
-     * Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
-     **/
+    //Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
     private static Bitmap getImageResized(Context context, Uri selectedImage) {
         Bitmap bm = null;
         int[] sampleSizes = new int[]{5, 3, 2, 1};
@@ -124,7 +125,7 @@ public class ImagePicker {
             bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
             Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
             i++;
-        } while (bm.getWidth() < minWidthQuality && i < sampleSizes.length);
+        } while (bm.getWidth() < DEFAULT_MIN_WIDTH_QUALITY && i < sampleSizes.length);
         return bm;
     }
 

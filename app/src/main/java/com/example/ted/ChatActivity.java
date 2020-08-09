@@ -70,7 +70,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
-// removed implements AIListener
+// removed implementation of AIListener, the speech to text componenet
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
     private static final int USER = 101;
