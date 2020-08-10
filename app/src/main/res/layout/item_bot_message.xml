@@ -15,7 +15,7 @@
             android:id="@+id/imageView"
             android:layout_width="30dp"
             android:layout_height="35dp"
-            android:layout_gravity="center"
+            android:layout_gravity="center|top"
             app:srcCompat="@drawable/ted" />
 
         <LinearLayout
