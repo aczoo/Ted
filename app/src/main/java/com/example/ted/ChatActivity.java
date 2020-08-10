@@ -76,15 +76,9 @@ public class ChatActivity extends AppCompatActivity {
     private Date sessionStart;
     private SessionsClient sessionsClient;
     private SessionName session;
+    private QueryParameters queryParam;
     private FirebaseUser user;
     private DatabaseReference userDB;
-    //List of knowledge bases to be used in the query parameter
-    private List<String> knowledgebases = Arrays.asList(
-            "projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA",
-            "projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg",
-            "projects/" + session.getProject() + "/knowledgeBases/MTQ3NDg4MjY5ODQ3NTQ3MDg0OA");
-    //Defines what knowledge bases to look into during the chat client call to dialogflow
-    private QueryParameters queryParam=QueryParameters.newBuilder().addAllKnowledgeBaseNames(knowledgebases).build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,6 +195,13 @@ public class ChatActivity extends AppCompatActivity {
             //Establishes a session client
             sessionsClient = SessionsClient.create(sessionsSettings);
             session = SessionName.of(projectId, UUID.randomUUID().toString());
+            //List of knowledge bases to be used in the query parameter
+            List<String> knowledgebases= Arrays.asList(
+                    "projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA",
+                    "projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg",
+                    "projects/" + session.getProject() + "/knowledgeBases/MTQ3NDg4MjY5ODQ3NTQ3MDg0OA");
+            //Establishes the parameters for the query, basically notes which knowledge bases to look at
+            queryParam = QueryParameters.newBuilder().addAllKnowledgeBaseNames(knowledgebases).build();
             //Takes note of the current time at which a chat is started with Ted
             sessionStart=new Date();
             //Access user's previous chat messages from firebase in chronological order
@@ -239,7 +240,7 @@ public class ChatActivity extends AppCompatActivity {
         new ChatClient(ChatActivity.this, session, sessionsClient, queryInput, queryParam, "Hi").execute();
     }
     //Onclick method for the arrow button, handles displaying and sending the user input to firebase
-    private void sendMessage(View view) {
+    public void sendMessage(View view) {
         String msg = etQuery.getText().toString();
         //Handles empty message
         if (msg.trim().isEmpty()) {
