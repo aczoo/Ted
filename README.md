@@ -6,7 +6,7 @@ The legal services market is one of the largest in the world and for a good reas
 ![demo](https://github.com/aczoo/Ted/blob/temp/ted_demo.gif)
 
 
-* Main components of the project
+Main components of the project
     * Facebook Authentication
     * Firebase Realtime DB
     * Guardian API
