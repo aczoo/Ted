@@ -199,7 +199,8 @@ public class ChatActivity extends AppCompatActivity {
             List<String> knowledgebases= Arrays.asList(
                     "projects/" + session.getProject() + "/knowledgeBases/MzEwNTg4OTQ1MTAyNTM2NzA0MA",
                     "projects/" + session.getProject() + "/knowledgeBases/NjE2MDk4MzY2Mzg3MDczODQzMg",
-                    "projects/" + session.getProject() + "/knowledgeBases/MTQ3NDg4MjY5ODQ3NTQ3MDg0OA");
+                    "projects/" + session.getProject() + "/knowledgeBases/MTQ3NDg4MjY5ODQ3NTQ3MDg0OA",
+                    "projects/" + session.getProject() + "/knowledgeBases/MjkwNDc3NTU4MDE2NTYwMzMyOA");
             //Establishes the parameters for the query, basically notes which knowledge bases to look at
             queryParam = QueryParameters.newBuilder().addAllKnowledgeBaseNames(knowledgebases).build();
             //Takes note of the current time at which a chat is started with Ted
@@ -298,7 +299,7 @@ public class ChatActivity extends AppCompatActivity {
         //If the message is the start of a session
         if(timestamp!=null){
             //Establishes the format of the parameter
-            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a d MMM", Locale.ENGLISH);
+            /*SimpleDateFormat sdf = new SimpleDateFormat("h:mm a d MMM", Locale.ENGLISH);
             TimeZone tz = TimeZone.getDefault();
             try {
                 //Extract a date from the parameter and accounts for the user's offset from UTC
@@ -308,7 +309,7 @@ public class ChatActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 Log.d(TAG, "Could not parse timestamp");
                 e.printStackTrace();
-            }
+            }*/
             //Creates a textview for the timestamp
             TextView tvTime = new TextView(ChatActivity.this);
             tvTime.setText(timestamp);
