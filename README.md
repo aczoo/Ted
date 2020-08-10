@@ -11,3 +11,5 @@ The legal services market is one of the largest in the world and for a good reas
     * Dialogflow
     * Google Natural Language API
 
+![Alt Text](https://github.com/aczoo/Ted/blob/temp/ted_demo.gif)
+
