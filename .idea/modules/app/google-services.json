@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "106344170223",
+    "firebase_url": "https://ted-4ca80.firebaseio.com",
+    "project_id": "ted-4ca80",
+    "storage_bucket": "ted-4ca80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106344170223:android:823379ee836345c111511a",
+        "android_client_info": {
+          "package_name": "com.example.ted"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106344170223-ns00fdadstfsk1adgdt79skitn14vvca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ted",
+            "certificate_hash": "81fcdc32ea0f0ec5d0f9c46e228aa4c82d69e932"
+          }
+        },
+        {
+          "client_id": "106344170223-csd1ia1uq8a0qbltddr04teh6agft4o0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK8h56gc1CvpvfgEaaRC5tr6YnPyU6UJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106344170223-csd1ia1uq8a0qbltddr04teh6agft4o0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

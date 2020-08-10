@@ -95,7 +95,7 @@ public class ImagePicker {
         imageFile.getParentFile().mkdirs();
         return imageFile;
     }
-    //
+    //Loads a bitmap and avoids using too much memory
     private static Bitmap decodeBitmap(Context context, Uri theUri, int sampleSize) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = sampleSize;
@@ -106,13 +106,10 @@ public class ImagePicker {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);
-
         Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
                 actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
-
         return actuallyUsableBitmap;
     }
 
@@ -129,7 +126,7 @@ public class ImagePicker {
         return bm;
     }
 
-
+    //Get rotation degrees of the selected image
     private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
         int rotation;
         if (isCamera) {
@@ -140,7 +137,7 @@ public class ImagePicker {
         Log.d(TAG, "Image rotation: " + rotation);
         return rotation;
     }
-
+    //Gets the rotation if photo is taken with the camera
     private static int getRotationFromCamera(Context context, Uri imageFile) {
         int rotate = 0;
         try {
@@ -167,7 +164,7 @@ public class ImagePicker {
         }
         return rotate;
     }
-
+    //Gets the rotation if photo is selected from the gallery
     public static int getRotationFromGallery(Context context, Uri imageUri) {
         int result = 0;
         String[] columns = {MediaStore.Images.Media.ORIENTATION};
@@ -188,7 +185,7 @@ public class ImagePicker {
         return result;
     }
 
-
+    // Rotate an image by a specified number of degrees
     private static Bitmap rotate(Bitmap bm, int rotation) {
         if (rotation != 0) {
             Matrix matrix = new Matrix();

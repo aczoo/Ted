@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     /*Handler for broadcasted actions under the name "logout"
-    /If the user logs out in the profile activity, we want to also close out this activity such that upon
+    If the user logs out in the profile activity, we want to also close out this activity such that upon
     being redirected to the login activity, users can not go back to the main page*/
     public BroadcastReceiver logoutReceiver= new BroadcastReceiver() {
         @Override
