@@ -7,11 +7,11 @@ The legal services market is one of the largest in the world and for a good reas
 
 
 Main components of the project
-    * Facebook Authentication
-    * Firebase Realtime DB
-    * Guardian API
-    * Duckduckgo webscraper api
-    * Dialogflow
-    * Google Natural Language API
+   * Facebook Authentication
+   * Firebase Realtime DB
+   * Guardian API
+   * Duckduckgo webscraper api
+   * Dialogflow
+   * Google Natural Language API
 
 
