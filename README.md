@@ -9,6 +9,6 @@ Main components of the project
    * Guardian API
    * Duckduckgo webscraper api
    * Dialogflow
-   * Google Natural Language API|
+   * Google Natural Language API
 
 
