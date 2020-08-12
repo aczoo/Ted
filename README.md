@@ -7,8 +7,8 @@ Main components of the project
    * Facebook Authentication
    * Firebase Realtime DB
    * Guardian API
-   * Duckduckgo webscraper api
-   * Dialogflow
+   * Duckduckgo webscraper API
+   * Dialogflow API
    * Google Natural Language API
 
 
